@@ -15,8 +15,10 @@ services:
     #   - Go_Proxy_BingAI_USER_TOKEN_1=xxx
     #   - Go_Proxy_BingAI_USER_TOKEN_2=xxx
     labels:
-      caddy: bing.nothingnessvoid.tech # 填写你的 chatgptwebshare 预先解析到 ip 上的域名
+      caddy: bingsandun.sandun.plus # 填写你的 chatgptwebshare 预先解析到 ip 上的域名
       caddy.reverse_proxy: "{{upstreams 8080}}"
+      caddy_1: sgp.nvoid.live
+      caddy_1.reverse_proxy: "{{upstreams 8080}}"
       
   caddy:
     image: lucaslorentz/caddy-docker-proxy:ci-alpine
