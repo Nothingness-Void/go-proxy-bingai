@@ -8,12 +8,12 @@ services:
     networks:
           - caddy
     restart: unless-stopped
-    # environment:
+    environment:
     #   - Go_Proxy_BingAI_SOCKS_URL=192.168.0.88:1070
     #   - Go_Proxy_BingAI_SOCKS_USER=xxx
     #   - Go_Proxy_BingAI_SOCKS_PWD=xxx
-    #   - Go_Proxy_BingAI_USER_TOKEN_1=xxx
-    #   - Go_Proxy_BingAI_USER_TOKEN_2=xxx
+     - Go_Proxy_BingAI_USER_TOKEN_1=123_456_abc
+     - Go_Proxy_BingAI_USER_TOKEN_2=xxx_yyy_zzz
     labels:
       caddy: bingsandun.sandun.plus # 填写你的 chatgptwebshare 预先解析到 ip 上的域名
       caddy.reverse_proxy: "{{upstreams 8080}}"
