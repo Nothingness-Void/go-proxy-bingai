@@ -7,10 +7,9 @@ on:
 jobs:
   build:
     name: build
-    needs: release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -28,6 +27,14 @@ jobs:
           npm run build
           cd ..
 
+      - name: Commit latest webFile
+        run: |
+          git config --global user.email "zklcdc@qq.com"
+          git config --global user.name "Harry-zklcdc"
+          git add web/*
+          git commit -m "[Upgrade] 🚀 Upload latest webFile"
+          git push origin HEAD:master
+
       - name: Build binary
         run: |
           GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -tags netgo -trimpath -o go-proxy-bingai main.go && tar -zcvf go-proxy-bingai-linux-amd64.tar.gz go-proxy-bingai
@@ -39,13 +46,7 @@ jobs:
 
       - name: Create Release and Upload Release Asset
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ github.ref }}
-          name: v${{ github.ref }}
-          body: TODO New Release.
-          draft: false
-          prerelease: false
           files: |
             go-proxy-bingai-linux-amd64.tar.gz
             go-proxy-bingai-linux-arm64.tar.gz
