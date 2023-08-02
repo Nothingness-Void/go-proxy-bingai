@@ -1,26 +1,26 @@
-name: 同步分支
+name: Upstream Sync
 
 permissions:
   contents: write
 
 on:
   schedule:
-    - cron: "0 0 * * *" # 每天凌晨12点运行一次
+    - cron: "0 0 * * *" # every day
   workflow_dispatch:
 
 jobs:
   sync_latest_from_upstream:
-    name: 从上游仓库同步最新提交
+    name: Sync latest commits from upstream repo
     runs-on: ubuntu-latest
     if: ${{ github.event.repository.fork }}
 
     steps:
-      # 第一步：运行一个标准的checkout action
-      - name: 检出目标仓库
+      # Step 1: run a standard checkout action
+      - name: Checkout target repo
         uses: actions/checkout@v3
 
-      # 第二步：运行同步action
-      - name: 同步上游变更
+      # Step 2: run the sync action
+      - name: Sync upstream changes
         id: sync
         uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
@@ -28,11 +28,11 @@ jobs:
           upstream_sync_branch: main
           target_sync_branch: main
 
-      # 第三步：运行创建拉取请求action
-      - name: 创建拉取请求
+      # Step 3: run the create pull request action
+      - name: Create pull request
         uses: peter-evans/create-pull-request@v3.10.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # 自动生成，无需设置
-          branch: create-pull-request/patch # 拉取请求分支名
-          title: 同步上游变更 # 拉取请求标题
-          body: 这是一个自动创建的拉取请求，用来同步上游仓库的变更。 # 拉取请求内容
+          token: ${{ secrets.GITHUB_TOKEN }} # automatically generated, no need to set
+          branch: create-pull-request/patch # the pull request branch name
+          title: Sync upstream changes # the pull request title
+          body: This is an automated pull request to sync changes from the upstream repository. # the pull request body
