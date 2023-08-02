@@ -15,7 +15,7 @@ jobs:
         persist-credentials: false # 避免使用默认token
 
     - name: Pull changes
-      uses: wei/pull@v1
+      uses: wei/pull@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用个人token
         UPSTREAM_REPO: Harry-zklcdc/go-proxy-bingai # B库的地址
