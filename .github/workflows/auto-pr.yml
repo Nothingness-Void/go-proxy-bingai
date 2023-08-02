@@ -1,18 +1,23 @@
-name: Sync with upstream
+name: Sync fork
 
 on:
   schedule:
-    - cron: '0 * * * *' # run every hour
-  workflow_dispatch: # on button click
+    - cron: '0 0 * * *' # 每30分钟运行一次
+  workflow_dispatch: # 允许手动触发
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: tgymnich/fork-sync@v1.8
-        with:
-          token: $ { { secrets.GITHUB_TOKEN }}
-          owner: Harry-zklcdc
-          repo: go-proxy-bingai
-          upstream_branch: main
-          target_branch: main
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false # 避免使用默认token
+
+    - name: Pull changes
+      uses: wei/pull@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用个人token
+        UPSTREAM_REPO: Harry-zklcdc/go-proxy-bingai # B库的地址
+        UPSTREAM_BRANCH: master # B库的分支
+        FORK_BRANCH: master # A库的分支
