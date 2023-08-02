@@ -1,38 +1,23 @@
-name: Upstream Sync
-
-permissions:
-  contents: write
+name: Sync fork
 
 on:
   schedule:
-    - cron: "0 0 * * *" # every day
-  workflow_dispatch:
+    - cron: '0 0 * * *' # 每天凌晨12点运行一次
+  workflow_dispatch: # 允许手动触发
 
 jobs:
-  sync_latest_from_upstream:
-    name: Sync latest commits from upstream repo
+  sync:
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.fork }}
-
     steps:
-      # Step 1: run a standard checkout action
-      - name: Checkout target repo
-        uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false # 避免使用默认token
 
-      # Step 2: run the sync action
-      - name: Sync upstream changes
-        id: sync
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
-        with:
-          upstream_sync_repo: https://github.com/Harry-zklcdc/go-proxy-bingai
-          upstream_sync_branch: main
-          target_sync_branch: main
-
-      # Step 3: run the create pull request action
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v3.10.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }} # automatically generated, no need to set
-          branch: create-pull-request/patch # the pull request branch name
-          title: Sync upstream changes # the pull request title
-          body: This is an automated pull request to sync changes from the upstream repository. # the pull request body
+    - name: Pull changes
+      uses: wei/pull@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用个人token
+        UPSTREAM_REPO: Harry-zklcdc/go-proxy-bingai # B库的地址
+        UPSTREAM_BRANCH: master # B库的分支
+        FORK_BRANCH: master # A库的分支
