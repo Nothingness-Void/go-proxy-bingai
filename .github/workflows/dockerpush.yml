@@ -1,0 +1,68 @@
+# 此工作流使用未经 GitHub 认证的操作。
+# 它们由第三方提供，并受
+# 单独的服务条款、隐私政策和支持
+# 文档。
+# GitHub 建议将操作固定到提交 SHA。
+# 若要获取较新版本，需要更新 SHA。
+# 还可以引用标记或分支，但该操作可能会更改而不发出警告。
+
+name: Publish Docker image
+
+on:
+  workflow_dispatch: # 手动触发
+  push:
+    # 每次 push tag 时进行构建，不需要每次 push 都构建。 使用通配符匹配每次 tag 的提交，记得 tag 名一定要以 v 开头
+    tags:
+      - v*
+
+env:
+  # 设置 docker 镜像名
+  IMAGE_NAME: nothingnessvoid/go-proxy-bingai
+
+jobs:
+  # 运行测试，如果需要的话，将注释取消掉并且修改为自己需要的内容
+  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  #  test:
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - uses: actions/checkout@v2
+  #
+  #      - name: Run tests
+  #        run: |
+  #          if [ -f docker-compose.test.yml ]; then
+  #            docker-compose --file docker-compose.test.yml build
+  #            docker-compose --file docker-compose.test.yml run sut
+  #          else
+  #            docker build . --file Dockerfile
+  #          fi
+
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push_to_registry:
+    # 如果需要在构建前进行测试的话需要取消下面的注释和上面对应的 test 动作的注释。
+    # needs: test
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: nothingnessvoid/go-proxy-bingai
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
