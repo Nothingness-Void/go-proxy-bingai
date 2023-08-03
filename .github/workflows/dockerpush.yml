@@ -61,7 +61,6 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: nothingnessvoid/go-proxy-bingai
-          tag_with_ref: false
 
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
@@ -70,4 +69,4 @@ jobs:
           file: ./Dockerfile
           push: true
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: nothingnessvoid/go-proxy-bingai:latest
