@@ -1,5 +1,6 @@
 name: Build Go-Proxy-BingAI
 on:
+  workflow_dispatch: # 手动触发
   push:
     tags:
       - v*
