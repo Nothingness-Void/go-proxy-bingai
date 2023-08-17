@@ -43,6 +43,8 @@ const isShowHistory = computed(() => {
   return (CIB.vm.isMobile && CIB.vm.sidePanel.isVisibleMobile) || (!CIB.vm.isMobile && CIB.vm.sidePanel.isVisibleDesktop);
 });
 
+const { themeMode } = storeToRefs(userStore);
+
 onMounted(async () => {
   await initChat();
   hackDevMode();
@@ -54,6 +56,19 @@ onMounted(async () => {
   isShowLoading.value = false;
   hackStyle();
   initChatPrompt();
+
+  // set Theme
+  if (themeMode.value == 'light') {
+    CIB.changeColorScheme(0);
+  } else if (themeMode.value == 'dark') {
+    CIB.changeColorScheme(1);
+  } else if (themeMode.value == 'auto') {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      CIB.changeColorScheme(1);
+    } else {
+      CIB.changeColorScheme(0);
+    }
+  }
 });
 
 const hackDevMode = () => {
@@ -78,6 +93,14 @@ const initChatService = () => {
     }
     chatStore.checkAllSydneyConfig();
   }
+  CIB.config.captcha.baseUrl = 'https://www.bing.com'
+  CIB.config.bing.baseUrl = location.origin;
+  CIB.config.bing.signIn.baseUrl = location.origin;
+  CIB.config.answers.baseUrl = location.origin;
+  CIB.config.answers.secondTurnScreenshotBaseUrl = location.origin;
+  CIB.config.contentCreator.baseUrl = location.origin;
+  CIB.config.visualSearch.baseUrl = location.origin;
+  CIB.config.suggestionsv2.baseUrl = location.origin;
 };
 
 const initSysConfig = async () => {
@@ -117,12 +140,10 @@ const hackStyle = () => {
     CIB.config.sydney.hostnamesToBypassSecureConnection = CIB.config.sydney.hostnamesToBypassSecureConnection.filter((x) => x !== location.hostname);
   }
   const serpEle = document.querySelector('cib-serp');
-  // 居中
-  serpEle?.setAttribute('alignment', 'center');
   const conversationEle = serpEle?.shadowRoot?.querySelector('cib-conversation') as HTMLElement;
   // todo 反馈暂时无法使用，先移除
   const welcomeEle = conversationEle?.shadowRoot?.querySelector('cib-welcome-container');
-  welcomeEle?.shadowRoot?.querySelector('.footer')?.remove();
+  welcomeEle?.shadowRoot?.querySelector('.preview-container')?.remove();
   serpEle?.shadowRoot?.querySelector('cib-serp-feedback')?.remove();
   if (isMobile()) {
     welcomeEle?.shadowRoot?.querySelector('.container-item')?.remove();

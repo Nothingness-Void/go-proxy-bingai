@@ -47,11 +47,13 @@ var (
 		"https://cn.bing.com",
 		"https://www.bing.com",
 	}
-	USER_TOKEN_COOKIE_NAME = "_U"
-	RAND_COOKIE_INDEX_NAME = "BingAI_Rand_CK"
-	RAND_IP_COOKIE_NAME    = "BingAI_Rand_IP"
-	PROXY_WEB_PREFIX_PATH  = "/web/"
-	PROXY_WEB_PAGE_PATH    = PROXY_WEB_PREFIX_PATH + "index.html"
+	USER_TOKEN_COOKIE_NAME          = "_U"
+	USER_KievRPSSecAuth_COOKIE_NAME = "KievRPSSecAuth"
+	USER_RwBf_COOKIE_NAME           = "_RwBf"
+	RAND_COOKIE_INDEX_NAME          = "BingAI_Rand_CK"
+	RAND_IP_COOKIE_NAME             = "BingAI_Rand_IP"
+	PROXY_WEB_PREFIX_PATH           = "/web/"
+	PROXY_WEB_PAGE_PATH             = PROXY_WEB_PREFIX_PATH + "index.html"
 )
 
 func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
@@ -91,12 +93,15 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 		}
 		req.Header.Set("X-Forwarded-For", randIP)
 
-		if USER_KievRPSSecAuth != "" {
-			// 添加 KievRPSSecAuth Cookie
-			req.AddCookie(&http.Cookie{
-				Name:  "KievRPSSecAuth",
-				Value: USER_KievRPSSecAuth,
-			})
+		ckUserKievRPSSecAuth, _ := req.Cookie(USER_KievRPSSecAuth_COOKIE_NAME)
+		if ckUserKievRPSSecAuth == nil || ckUserKievRPSSecAuth.Value == "" {
+			if USER_KievRPSSecAuth != "" {
+				// 添加 KievRPSSecAuth Cookie
+				req.AddCookie(&http.Cookie{
+					Name:  USER_KievRPSSecAuth_COOKIE_NAME,
+					Value: USER_KievRPSSecAuth,
+				})
+			}
 		}
 
 		// 未登录用户
@@ -114,6 +119,17 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 			// if !strings.Contains(ua, "iPhone") || !strings.Contains(ua, "Mobile") {
 			// 	req.Header.Set("User-Agent", "iPhone Mobile "+ua)
 			// }
+		}
+
+		ckUserRwBf, _ := req.Cookie(USER_RwBf_COOKIE_NAME)
+		if ckUserRwBf == nil || ckUserRwBf.Value == "" {
+			if USER_RwBf != "" {
+				// 添加 RwBf Cookie
+				req.AddCookie(&http.Cookie{
+					Name:  USER_RwBf_COOKIE_NAME,
+					Value: USER_RwBf,
+				})
+			}
 		}
 
 		ua := req.UserAgent()
