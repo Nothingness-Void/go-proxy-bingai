@@ -259,6 +259,12 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 		// 构建tls.UConn
 		xtlsConn := xtls.UClient(con, xtlsConf, xtls.HelloEdge_106)
 
+		// TLS握手
+		err = xtlsConn.Handshake()
+		if err != nil {
+			return nil, err
+		}
+
 		return xtlsConn, err
 	}
 
