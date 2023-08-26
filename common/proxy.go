@@ -3,12 +3,11 @@ package common
 import (
 	"bytes"
 	"compress/gzip"
-	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"log"
 	"math/rand"
-	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -17,7 +16,7 @@ import (
 	"time"
 
 	"github.com/andybalholm/brotli"
-	xtls "github.com/refraction-networking/utls"
+	utls "github.com/refraction-networking/utls"
 )
 
 var (
@@ -237,35 +236,16 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 	// 	},
 	// }
 
+	// 为 http.DefaultTransport 添加 JA3 浏览器指纹
 	transport := http.DefaultTransport.(*http.Transport).Clone()
-	// 添加JA3指纹
-	transport.DialTLSContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
-		dialer := net.Dialer{}
-		// 创建tcp连接
-		con, err := dialer.DialContext(ctx, network, addr)
-		if err != nil {
-			return nil, err
-		}
-		// 根据地址获取host信息
-		host, _, err := net.SplitHostPort(addr)
-		if err != nil {
-			return nil, err
-		}
-		// 构建tlsconf
-		xtlsConf := &xtls.Config{
-			ServerName:    host,
-			Renegotiation: xtls.RenegotiateNever,
-		}
-		// 构建tls.UConn
-		xtlsConn := xtls.UClient(con, xtlsConf, xtls.HelloEdge_106)
-
-		// TLS握手
-		err = xtlsConn.Handshake()
-		if err != nil {
-			return nil, err
-		}
-
-		return xtlsConn, err
+	transport.DisableKeepAlives = false
+	c, _ := utls.UTLSIdToSpec(utls.HelloRandomized)
+	transport.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: true,
+		MinVersion:         c.TLSVersMin,
+		MaxVersion:         c.TLSVersMax,
+		CipherSuites:       c.CipherSuites,
+		ClientSessionCache: tls.NewLRUClientSessionCache(32),
 	}
 
 	// 代理请求   请求回来的内容   报错自动调用
@@ -321,9 +301,9 @@ func replaceResBody(originalBody string, originalScheme string, originalHost str
 	}
 
 	// 对话暂时支持国内网络，而且 Vercel 还不支持 Websocket ，先不用
-	// if strings.Contains(modifiedBodyStr, BING_CHAT_DOMAIN) {
-	// 	modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, BING_CHAT_DOMAIN, originalDomain)
-	// }
+	if strings.Contains(modifiedBodyStr, BING_URL.Host) {
+		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, BING_URL.Host, originalHost)
+	}
 
 	// if strings.Contains(modifiedBodyStr, "https://www.bingapis.com") {
 	// 	modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, "https://www.bingapis.com", "https://bing.vcanbb.top")
