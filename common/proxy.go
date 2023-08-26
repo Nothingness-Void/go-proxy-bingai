@@ -3,6 +3,7 @@ package common
 import (
 	"bytes"
 	"compress/gzip"
+	"crypto/tls"
 	"fmt"
 	"io"
 	"log"
@@ -15,7 +16,7 @@ import (
 	"time"
 
 	"github.com/andybalholm/brotli"
-	"golang.org/x/net/proxy"
+	utls "github.com/refraction-networking/utls"
 )
 
 var (
@@ -142,7 +143,7 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 			req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.35")
 		}
 
-		for hKey, _ := range req.Header {
+		for hKey := range req.Header {
 			if _, ok := KEEP_REQ_HEADER_MAP[hKey]; !ok {
 				req.Header.Del(hKey)
 			}
@@ -235,30 +236,24 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 	// 	},
 	// }
 
+	// 为 http.DefaultTransport 添加 JA3 浏览器指纹
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.DisableKeepAlives = false
+	c, _ := utls.UTLSIdToSpec(utls.HelloRandomized)
+	transport.TLSClientConfig = &tls.Config{
+		InsecureSkipVerify: true,
+		MinVersion:         c.TLSVersMin,
+		MaxVersion:         c.TLSVersMax,
+		CipherSuites:       c.CipherSuites,
+		ClientSessionCache: tls.NewLRUClientSessionCache(32),
+	}
+
 	// 代理请求   请求回来的内容   报错自动调用
 	reverseProxy := &httputil.ReverseProxy{
 		Director:       director,
 		ModifyResponse: modifyFunc,
 		ErrorHandler:   errorHandler,
-	}
-
-	// socks
-	if SOCKS_URL != "" {
-		var socksAuth *proxy.Auth
-		if SOCKS_USER != "" && SOCKS_PWD != "" {
-			socksAuth = &proxy.Auth{
-				User:     SOCKS_USER,
-				Password: SOCKS_PWD,
-			}
-		}
-		s5Proxy, err := proxy.SOCKS5("tcp", SOCKS_URL, socksAuth, proxy.Direct)
-		if err != nil {
-			panic(err)
-		}
-		tr := &http.Transport{
-			Dial: s5Proxy.Dial,
-		}
-		reverseProxy.Transport = tr
+		Transport:      transport,
 	}
 
 	return reverseProxy
@@ -306,9 +301,9 @@ func replaceResBody(originalBody string, originalScheme string, originalHost str
 	}
 
 	// 对话暂时支持国内网络，而且 Vercel 还不支持 Websocket ，先不用
-	// if strings.Contains(modifiedBodyStr, BING_CHAT_DOMAIN) {
-	// 	modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, BING_CHAT_DOMAIN, originalDomain)
-	// }
+	if strings.Contains(modifiedBodyStr, BING_URL.Host) {
+		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, BING_URL.Host, originalHost)
+	}
 
 	// if strings.Contains(modifiedBodyStr, "https://www.bingapis.com") {
 	// 	modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, "https://www.bingapis.com", "https://bing.vcanbb.top")
