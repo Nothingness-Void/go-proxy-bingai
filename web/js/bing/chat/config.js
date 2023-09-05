@@ -191,9 +191,9 @@ _w['_sydConvConfig'] = {
   enableMaxTurnsPerConversation: true,
   enableMaxTurnsFromBackend: false,
 // 设置已登录账号的聊天对话次数
-  maxTurnsPerConversation: 30,
+  maxTurnsPerConversation: 50,
 // 设置未登录账号的聊天对话次数
-  maxTurnsPerConversationMuidUser: 10,
+  maxTurnsPerConversationMuidUser: 30,
   maxMessageLength: 4000,
   enableSigninTurnFix: true,
   enableAmberTurnPerConversation: false,
