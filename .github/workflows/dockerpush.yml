@@ -1,11 +1,3 @@
-# 此工作流使用未经 GitHub 认证的操作。
-# 它们由第三方提供，并受
-# 单独的服务条款、隐私政策和支持
-# 文档。
-# GitHub 建议将操作固定到提交 SHA。
-# 若要获取较新版本，需要更新 SHA。
-# 还可以引用标记或分支，但该操作可能会更改而不发出警告。
-
 name: Publish Docker image
 
 on:
@@ -25,24 +17,6 @@ env:
   IMAGE_NAME: nothingnessvoid/go-proxy-bingai
 
 jobs:
-  # 运行测试，如果需要的话，将注释取消掉并且修改为自己需要的内容
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  #  test:
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - uses: actions/checkout@v2
-  #
-  #      - name: Run tests
-  #        run: |
-  #          if [ -f docker-compose.test.yml ]; then
-  #            docker-compose --file docker-compose.test.yml build
-  #            docker-compose --file docker-compose.test.yml run sut
-  #          else
-  #            docker build . --file Dockerfile
-  #          fi
-
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
   push_to_registry:
     # 如果需要在构建前进行测试的话需要取消下面的注释和上面对应的 test 动作的注释。
     # needs: test
@@ -69,5 +43,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           labels: ${{ steps.meta.outputs.labels }}
           tags: nothingnessvoid/go-proxy-bingai:latest
