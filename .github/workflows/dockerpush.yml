@@ -3,10 +3,10 @@ name: Publish Docker image
 on:
   workflow_dispatch: # 手动触发
   workflow_run:
-    workflows: ["auto-pr"]
+    workflows: ["auto-pr.yml"]
     branches: [main]
     types:
-      - completed
+      - completed push
   push:
     # 每次 push tag 时进行构建，不需要每次 push 都构建。 使用通配符匹配每次 tag 的提交，记得 tag 名一定要以 v 开头
     tags:
