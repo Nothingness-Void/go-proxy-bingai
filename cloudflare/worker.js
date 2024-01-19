@@ -169,8 +169,15 @@ const home = async (pathname) => {
   let url;
   if (pathname.indexOf('/web/') === 0) {
     url = pathname.replace('/web/', baseUrl+'web/');
+    if (pathname == '/web/') {
+      url += 'index.html';
+    }
   } else {
-    url = baseUrl + 'web/index.html';
+    let res = new Response('', {
+      status: 302,
+    });
+    res.headers.set("location", "/web/");
+    return res;
   }
   const res = await fetch(url);
   const result = await rewriteBody(res);
@@ -272,10 +279,8 @@ export default {
     });
     newHeaders.set('host', targetUrl.host);
     newHeaders.set('origin', BING_ORIGIN);
-    if (request.headers.has('referer')) {
-      if (request.headers.get('referer').indexOf('web/compose.html') != -1) {
-        newHeaders.set('referer', 'https://edgeservices.bing.com/edgesvc/compose');
-      }
+    if (request.headers.has('referer') && request.headers.get('referer').indexOf('web/compose.html') != -1) {
+      newHeaders.set('referer', 'https://edgeservices.bing.com/edgesvc/compose');
     } else {
       newHeaders.set('referer', 'https://www.bing.com/search?q=Bing+AI&showconv=1&FORM=hpcodx');
     }
