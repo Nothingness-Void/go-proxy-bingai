@@ -48,7 +48,7 @@
 
 > #### Vercel 部署
 >
-> [![Vercel 部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHarry-zklcdc%2Fgo-proxy-bingai&env=BYPASS_SERVER&env=USER_KievRPSSecAuth&project-name=go-proxy-bingai&repository-name=go-proxy-bingai)
+> [![Vercel 部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHarry-zklcdc%2Fgo-proxy-bingai&env=BYPASS_SERVER&project-name=go-proxy-bingai&repository-name=go-proxy-bingai)
 
 > #### Replit 部署
 >
@@ -62,7 +62,7 @@
 
 > #### 🤗 Hugging Face 部署
 >
-> [![部署到HuggingFace](https://huggingface.co/datasets/huggingface/badges/raw/main/deploy-on-spaces-md.svg)](https://huggingface.co/spaces/zklcdc/go-bingai-pass?duplicate=true&visibility=public)
+> [![部署到HuggingFace](https://huggingface.co/datasets/huggingface/badges/raw/main/deploy-on-spaces-md.svg)](https://huggingface.co/spaces/zklcdc/pass?duplicate=true&visibility=public)
 
 > #### CodeSandbox 部署
 >
