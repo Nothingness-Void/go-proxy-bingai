@@ -118,6 +118,7 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 				}
 				w.Write([]byte("data: "))
 				w.Write(resData)
+				w.Write([]byte("\n"))
 				break
 			}
 			resData, err := json.Marshal(resp)
@@ -140,6 +141,8 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 				}(globalChat.GetCookies())
 			}
 		}
+		w.Write([]byte("data: [DONE]\n"))
+		flusher.Flush()
 	} else {
 		text, err := chat.Chat(prompt, msg)
 		if err != nil {
