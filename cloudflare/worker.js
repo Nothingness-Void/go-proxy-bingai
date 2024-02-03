@@ -13,6 +13,7 @@ const WEB_CONFIG = {
 
 const SYDNEY_ORIGIN = 'https://sydney.bing.com';
 const BING_ORIGIN = 'https://www.bing.com';
+const EDGE_ORIGIN = 'https://edgeservices.bing.com';
 const DESIGNER_ORIGIN = 'https://designer.microsoft.com';
 const KEEP_REQ_HEADERS = [
   'accept',
@@ -144,8 +145,9 @@ const rewriteBody = async (res) => {
       }
       if (decodedContent) {
         // @ts-ignore
-        body = decodedContent.replaceAll("www.bing.com", WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-        body = body.replaceAll("designer.microsoft.com", WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer');
+        body = decodedContent.replaceAll(BING_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
+        body = body.replaceAll(EDGE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
+        body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer');
       }
     }
   }
@@ -205,7 +207,7 @@ const challengeResponseBody = `
 			} else {
 				window.parent.postMessage("verificationFailed", "*");
 			}
-		}).cache(() => {
+		}).catch(() => {
 			window.parent.postMessage("verificationFailed", "*");
 		});
 	}
@@ -301,9 +303,10 @@ export default {
     let targetUrl;
     if (currentUrl.pathname.includes('/sydney')) {
       targetUrl = new URL(SYDNEY_ORIGIN + currentUrl.pathname + currentUrl.search);
+    } else if (currentUrl.pathname.includes('/edgesvc')) {
+      targetUrl = new URL(EDGE_ORIGIN + currentUrl.pathname + currentUrl.search);
     } else if (currentUrl.pathname.includes('/designer/')) {
       targetUrl = new URL(DESIGNER_ORIGIN + currentUrl.pathname.replaceAll('/designer/', '/') + currentUrl.search);
-      console.log(targetUrl)
     } else{
       targetUrl = new URL(BING_ORIGIN + currentUrl.pathname + currentUrl.search);
     }
@@ -338,22 +341,16 @@ export default {
     if (!cookie.includes('_RwBf=')) {
       if (_RwBf.length !== 0) {
         cookies += '; _RwBf=' + _RwBf
-      } else {
-        cookies += '; _RwBf=' + randomString(256);
       }
     }
     if (!cookie.includes('MUID=')) {
         if (MUID.length !== 0) {
           cookies += '; MUID=' + MUID
-        } else {
-          cookies += '; MUID=' + randomString(256);
         }
       }
     if (!cookie.includes('_U=')) {
       if (_U.length !== 0) {
         cookies += '; _U=' + _U;
-      } else {
-        cookies += '; _U=' + randomString(128);
       }
     }
 
