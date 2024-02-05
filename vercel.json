@@ -3,7 +3,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "/api/{index,web,sydney,designer,edgesvc,sys-config,bypass,challenge,verify}.go",
+      "src": "/api/{index,web,sydney,edgesvc,designer,sys-config,bypass,challenge,verify}.go",
       "use": "@vercel/go"
     },
     {
@@ -45,12 +45,12 @@
       "dest": "/api/v1/image.go"
     },
     {
-      "src": "/edgesvc/.*",
-      "dest": "/api/edgesvc.go"
-    },
-    {
       "src": "/designer/.*",
       "dest": "/api/designer.go"
+    },
+    {
+      "src": "/edgesvc/.*",
+      "dest": "/api/edgesvc.go"
     },
     {
       "src": "/sydney/.*",
