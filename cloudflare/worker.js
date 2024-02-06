@@ -389,10 +389,10 @@ export default {
       }
     }
     if (!cookie.includes('MUID=')) {
-        if (MUID.length !== 0) {
-          cookies += '; MUID=' + MUID
-        }
+      if (MUID.length !== 0) {
+        cookies += '; MUID=' + MUID
       }
+    }
     if (!cookie.includes('_U=')) {
       if (_U.length !== 0) {
         cookies += '; _U=' + _U;
@@ -443,6 +443,14 @@ export default {
     const res = await fetch(newReq);
     const result = await rewriteBody(res);
     const newRes = new Response(result.body, res);
+    let setCookies = res.headers.getAll('set-cookie')
+    if (setCookies.length > 0) {
+      newRes.headers.set('set-cookie', '')
+      setCookies.forEach(v => {
+        const tmp = v.split('; ')
+        newRes.headers.append('set-cookie', tmp[0] + '; path=/')
+      })
+    }
     result.encoding && newRes.headers.set("Content-Encoding", result.encoding);
     newRes.headers.set('Access-Control-Allow-Origin', request.headers.get('Origin'));
     newRes.headers.set('Access-Control-Allow-Methods', 'GET,HEAD,POST,OPTIONS');
