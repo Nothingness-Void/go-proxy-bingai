@@ -13,18 +13,21 @@ RUN curl -L https://github.com/Harry-zklcdc/go-proxy-bingai/releases/latest/down
     tar -zxvf go-proxy-bingai-linux-amd64.tar.gz && \
     chmod +x go-proxy-bingai
 
+RUN curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared && \
+    chmod +x cloudflared
+
 RUN apt-get remove -y curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm go-proxy-bingai-linux-amd64.tar.gz
 
-COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 USER $GBP_USER
 
-ENV PORT=7860
-ENV BYPASS_SERVER=http://localhost:8080
+ENV PORT=8080
+ENV BYPASS_SERVER=http://localhost:45678
 
-EXPOSE 7860 8080 9005
+EXPOSE 8080
 
 CMD /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor.conf
