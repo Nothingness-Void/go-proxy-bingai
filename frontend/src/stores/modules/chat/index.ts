@@ -24,12 +24,12 @@ export const useChatStore = defineStore(
     const selectedSydneyBaseUrl = ref('');
     const sydneyConfigs = ref<SydneyConfig[]>([
       {
-        baseUrl: 'https://proxy.nvoid.games/proxy/https://sydney.bing.com',
-        label: 'Bing 官方（代理）',
+        baseUrl: 'https://sydney.bing.com',
+        label: 'Bing 官方',
       },
       {
-        baseUrl: 'https://bingserver.nothingnessvoid.tech',
-        label: 'Cloudflare',
+        baseUrl: 'https://sydney.zklcdc.xyz',
+        label: 'Cloudflare Worker',
       },
       {
         baseUrl: location.origin,
