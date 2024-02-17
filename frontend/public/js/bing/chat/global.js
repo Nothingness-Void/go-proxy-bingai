@@ -113,33 +113,54 @@ function base58Decode(s) {
   return bytes.reverse().map(b => String.fromCharCode(Number(b))).join('')
 }
 
-function aesEncrypt(e, t) {
-  var a = window.CryptoJS.enc.Utf8.parse(t),
-  n = window.CryptoJS.lib.WordArray.random(128/8),
-  r = window.CryptoJS.enc.Utf8.parse(e),
-  o = window.CryptoJS.AES.encrypt(r, a, {
-    iv: n,
-    mode: window.CryptoJS.mode.CBC,
-    padding: window.CryptoJS.pad.Pkcs7
-  });
-  var result = n.concat(o.ciphertext);
-  return window.CryptoJS.enc.Base64.stringify(result);
+async function aesEncrypt(e, t) {
+  const c = new TextEncoder();
+  const mb = c.encode(e), kb = c.encode(t);
+  const iv = window.crypto.getRandomValues(new Uint8Array(16));
+
+  const ck = await window.crypto.subtle.importKey(
+    "raw",
+    kb,
+    { name: "AES-CBC", length: 256 },
+    false,
+    ["encrypt"]
+  );
+  const ed = await window.crypto.subtle.encrypt(
+    { name: "AES-CBC", iv: iv },
+    ck,
+    mb
+  )
+
+  const r = new Uint8Array(iv.byteLength + ed.byteLength);
+  r.set(new Uint8Array(iv), 0);
+  r.set(new Uint8Array(ed), iv.byteLength);
+  return btoa(String.fromCharCode.apply(null, r));
 }
 
-function aesDecrypt(e, t) {
-  var a = window.CryptoJS.enc.Utf8.parse(t),
-  r = window.CryptoJS.enc.Base64.parse(e),
-  n = window.CryptoJS.lib.WordArray.create(r.words.slice(0, 4)),
-  ciphertext = window.CryptoJS.lib.WordArray.create(r.words.slice(4)),
-  o = window.CryptoJS.AES.decrypt({
-    ciphertext: ciphertext
-  },
-  a, {
-    iv: n,
-    mode: window.CryptoJS.mode.CBC,
-    padding: window.CryptoJS.pad.Pkcs7
-  });
-  return o.toString(window.CryptoJS.enc.Utf8)
+async function aesDecrypt(e, t) {
+  const c = new TextEncoder();
+  const kb = Uint8Array.from(c.encode(t));
+  const cb = Uint8Array.from(atob(e), c => c.charCodeAt(0));
+
+  const iv = cb.slice(0, 16);
+  const ct = cb.slice(16);
+
+  const key = await window.crypto.subtle.importKey(
+    "raw",
+    kb,
+    { name: "AES-CBC", length: 256 },
+    false,
+    ["decrypt"]
+  );
+
+  const dd = await window.crypto.subtle.decrypt(
+    { name: "AES-CBC", iv: iv },
+    key,
+    ct
+  );
+
+  const d = new TextDecoder();
+  return d.decode(dd);
 }
 
 try {
@@ -206,7 +227,8 @@ _G = {
   TIP: 'L2yDt6NHpVg74zXbiBVawp2LXBqjJe69YXaqikLo6FSPRXTBSUtR6ThZ41EAwzei6dMFnTLBw6ngU32nwwgiSsRc1yemqufobYSrv96ii7qArPE9nssRwizpWUHDtJr8vSzmbjS',
   TIPC: 'EQWVgx176AeS3PtMCwMpt8iG89A6uTZfqKzBsQKhA9PjXcoJBEEX9pgNmgx1stfRCh6Q4gdGgNX23KfMJ2ZBLtUbnCQXWMPAHVCNkNCxehuyHwD2uk1PWHzkFCqqYVowZQxxjxfEUFwXwucCz47doC51LdpGDQrh28xq1MZy1qXb1XeNuvJ2U1duHGi1Bqg3GJ8oXqZpqKvrWYm7dDPbjgkEeywZJw59CwMAQFmdy7GBFDP9KkqChGM2sKTW2p3RVdauSZe6tvU2evCDC56idpu4JRwaFstSjnuxaoTcxXJDcBv1AXPSZSH3zEUSbeJbTB59mnDx1jd4nsEcM4smZPnMt6x4dG7atwfFuHvjwCTCeEg5jsMJSL5bP1K2tE1pVFC7XBTo4KNpJy5dUkHrHLk8GRdixUPSQczHh9Ex7sHKN7LZK72ZN8MDg2j1iooeqAGSNEQL3QYJj6gsoPTXzVaCo1yehRjD3v9JP98U7Dye77YhhdiDSYDAMrCdpfpmFugMnpbc8FuWVvDuJsSrpGdYZe6Sdg8vwTezayJ9SBdBXdgSuksSGfgU',
   S: '79cLbqW6MpzicDLEz8MHDyKFV9K9hDHbayZSM4mYMxdGGzAPG2288hvFUcAv59xDm4Vqo3h5akCiam2L6kvg7',
-  SP: [ 21, 7, 4, 2, 14, 10, 7, 47, 46, 29, 40, 24, 0, 40, 3, 27, 42, 30, 37, 31, 23, 40, 29, 48, 51, 57, 15, 33, 58, 21, 30, 1, 17, 16, 40, 3, 35, 33 ]
+  SP: [ 21, 7, 4, 2, 14, 10, 7, 47, 46, 29, 40, 24, 0, 40, 3, 27, 42, 30, 37, 31, 23, 40, 29, 48, 51, 57, 15, 33, 58, 21, 30, 1, 17, 16, 40, 3, 35, 33 ],
+  AT: 'Harry-zklcdc/go-proxy-bingai'
 };
 _G.lsUrl = '/fd/ls/l?IG=' + _G.IG;
 curUrl = '/search';
