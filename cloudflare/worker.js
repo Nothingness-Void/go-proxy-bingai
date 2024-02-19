@@ -365,7 +365,12 @@ const verify = async (request, cookie) => {
   const res = await fetch(newReq)
   if (res.status != 200) {
     if (res.status === 451) {
-      return new Response('{"code":451,"message":"Verification Failed","data":null}', { status: 451 })
+      return new Response('{"code":451,"message":"Verification Failed","data":null}', {
+        status: 451,
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      })
     }
     return new Response('{"code":500,"message":"Server Error","data":null}', { status: res.status })
   }
@@ -388,7 +393,12 @@ const verify = async (request, cookie) => {
  */
 const pass = async (request, cookie) => {
   if (request.method != 'POST') {
-    return new Response('{"code":405,"message":"Method Not Allowed","data":null}', { status: 405 });
+    return new Response('{"code":405,"message":"Method Not Allowed","data":null}', {
+      status: 405,
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    });
   }
 
   let resqBody = JSON.parse(await request.text());
@@ -421,6 +431,17 @@ const pass = async (request, cookie) => {
   return await fetch(newReq);
 };
 
+
+const login = async (url, headers) => {
+  console.log(url)
+  const newReq = new Request(BING_ORIGIN+'/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2fchat%3fq%3dBing%2bAI%26FORM%3dhpcodx%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=001DD71D5A386F753B1FC3055B306E8F', {
+    method: 'GET',
+    headers: headers,
+    redirect: 'manual',
+  });
+  return fetch(newReq);
+}
+
 /**
  * bingapi
  * @param {Request} request
@@ -428,7 +449,11 @@ const pass = async (request, cookie) => {
  * @returns
  */
 const bingapi = async (request, cookie) => {
-  return new Response('{"code":200,"message":"TODO","data":null}')
+  return new Response('{"code":200,"message":"TODO","data":null}', {
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    })
+  })
 };
 
 export default {
@@ -448,8 +473,12 @@ export default {
     if (currentUrl.pathname === '/' || currentUrl.pathname.indexOf('/web/') === 0) {
       return home(currentUrl.pathname);
     }
-    if (currentUrl.pathname === '/sysconf') {
-      return new Response('{"code":200,"message":"success","data":{"isSysCK":false,"isAuth":true}}')
+    if (currentUrl.pathname.startsWith('/sysconf')) {
+      return new Response('{"code":200,"message":"success","data":{"isSysCK":false,"isAuth":true}}', {
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      })
     }
     let targetUrl;
     if (currentUrl.pathname.includes('/sydney')) {
@@ -542,6 +571,10 @@ export default {
       );
     } else {
       newHeaders.set('user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.35');
+    }
+
+    if (currentUrl.pathname.startsWith('/fd/auth/signin')) {
+      return login(currentUrl, newHeaders);
     }
 
     // newHeaders.forEach((value, key) => console.log(`${key} : ${value}`));
