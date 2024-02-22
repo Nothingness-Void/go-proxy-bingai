@@ -16,8 +16,8 @@ import (
 var (
 	globalChat *binglib.Chat
 
-	chatMODELS = []string{binglib.BALANCED, binglib.BALANCED_OFFLINE, binglib.CREATIVE, binglib.CREATIVE_OFFLINE, binglib.PRECISE, binglib.PRECISE_OFFLINE,
-		binglib.BALANCED_G4T, binglib.BALANCED_G4T_OFFLINE, binglib.CREATIVE_G4T, binglib.CREATIVE_G4T_OFFLINE, binglib.PRECISE_G4T, binglib.PRECISE_G4T_OFFLINE}
+	GPT_35_TURBO        = "gpt-3.5-turbo"
+	GPT_4_TURBO_PREVIEW = "gpt-4-turbo-preview"
 
 	STOPFLAG = "stop"
 )
@@ -72,10 +72,34 @@ func ChatHandler(w http.ResponseWriter, r *http.Request) {
 	var resq chatRequest
 	json.Unmarshal(resqB, &resq)
 
-	if !common.IsInArray(chatMODELS, resq.Model) {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Model Not Found"))
-		return
+	if !common.IsInArray(binglib.ChatModels[:], resq.Model) {
+		if !common.IsInArray([]string{GPT_35_TURBO, GPT_4_TURBO_PREVIEW}, resq.Model) {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Model Not Found"))
+			return
+		}
+
+		if resq.Temperature <= 0 || resq.Temperature > 2 {
+			resq.Temperature = 1
+		}
+		if resq.Model == GPT_35_TURBO {
+			if resq.Temperature <= 0.75 {
+				resq.Model = binglib.PRECISE
+			} else if resq.Temperature > 0.75 && resq.Temperature < 1.25 {
+				resq.Model = binglib.BALANCED
+			} else if resq.Temperature >= 1.25 {
+				resq.Model = binglib.CREATIVE
+			}
+		}
+		if resq.Model == GPT_4_TURBO_PREVIEW {
+			if resq.Temperature <= 0.75 {
+				resq.Model = binglib.PRECISE_G4T
+			} else if resq.Temperature > 0.75 && resq.Temperature < 1.25 {
+				resq.Model = binglib.BALANCED_G4T
+			} else if resq.Temperature >= 1.25 {
+				resq.Model = binglib.CREATIVE_G4T
+			}
+		}
 	}
 
 	err = chat.NewConversation()
