@@ -1,17 +1,19 @@
 import { brotli_decode } from "./bjs.js"
-import { bingapiModels, bingapiModel, bingapiChat, getRandomIP } from "./bingapi.js"
+import { bingapiModels, bingapiModel, bingapiChat, bingapiImage, getRandomIP } from "./bingapi.js"
 
 // 同查找 _U 一样, 查找 KievRPSSecAuth 的值并替换下方的xxx
 const CUSTOM_OPTIONS = {
-    KievRPSSecAuth: '',
-    _RwBf: '',
-    MUID: '',
-    _U: '',
+  KievRPSSecAuth: '',
+  _RwBf: '',
+  MUID: '',
+  _U: '',
 
-    BYPASS_SERVER: '',
-    APIKEY: '',
+  BYPASS_SERVER: '',
+  APIKEY: '',
+  Go_Proxy_BingAI_BLANK_API_KEY: false,
 
-    NIGHTLY: false,
+  INFO: '',
+  NIGHTLY: false,
 }
 
 const WEB_CONFIG = {
@@ -92,14 +94,14 @@ const rewriteBody = async (res) => {
       // @ts-ignore
       body = decodedContent.replaceAll(BING_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
       body = body.replaceAll(EDGE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-      body = body.replaceAll(DESIGNER_CDN_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-cdn');
-      body = body.replaceAll(DESIGNER_APP_EDOG_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-app-edog');
-      body = body.replaceAll(DESIGNER_DOCUMENT_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-document');
-      body = body.replaceAll(DESIGNER_USERASSETS_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-userassets');
-      body = body.replaceAll(DESIGNER_MEDIASUGGESTION_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-mediasuggestion');
-      body = body.replaceAll(DESIGNER_RTC_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-rtc');
-      body = body.replaceAll(DESIGNER_APP_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-app');
-      body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer');
+      body = body.replaceAll(DESIGNER_CDN_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-cdn');
+      body = body.replaceAll(DESIGNER_APP_EDOG_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app-edog');
+      body = body.replaceAll(DESIGNER_DOCUMENT_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-document');
+      body = body.replaceAll(DESIGNER_USERASSETS_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-userassets');
+      body = body.replaceAll(DESIGNER_MEDIASUGGESTION_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-mediasuggestion');
+      body = body.replaceAll(DESIGNER_RTC_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-rtc');
+      body = body.replaceAll(DESIGNER_APP_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app');
+      body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer');
     }
   } else if (res.url.endsWith("js")) {
     let decodedContent = null;
@@ -113,17 +115,17 @@ const rewriteBody = async (res) => {
       // @ts-ignore
       body = decodedContent.replaceAll(BING_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
       body = body.replaceAll(EDGE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-      body = body.replaceAll(DESIGNER_CDN_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-cdn');
-      body = body.replaceAll(DESIGNER_APP_EDOG_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-app-edog');
-      body = body.replaceAll(DESIGNER_DOCUMENT_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-document');
-      body = body.replaceAll(DESIGNER_USERASSETS_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-userassets');
-      body = body.replaceAll(DESIGNER_MEDIASUGGESTION_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-mediasuggestion');
-      body = body.replaceAll(DESIGNER_RTC_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-rtc');
-      body = body.replaceAll(DESIGNER_APP_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer-app');
-      body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "")+'/designer');
+      body = body.replaceAll(DESIGNER_CDN_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-cdn');
+      body = body.replaceAll(DESIGNER_APP_EDOG_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app-edog');
+      body = body.replaceAll(DESIGNER_DOCUMENT_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-document');
+      body = body.replaceAll(DESIGNER_USERASSETS_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-userassets');
+      body = body.replaceAll(DESIGNER_MEDIASUGGESTION_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-mediasuggestion');
+      body = body.replaceAll(DESIGNER_RTC_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-rtc');
+      body = body.replaceAll(DESIGNER_APP_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app');
+      body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer');
     }
   }
-  return {body, encoding};
+  return { body, encoding };
 }
 
 /**
@@ -140,7 +142,7 @@ const home = async (pathname) => {
   }
   let url;
   if (pathname.indexOf('/web/') === 0) {
-    url = pathname.replace('/web/', baseUrl+'web/');
+    url = pathname.replace('/web/', baseUrl + 'web/');
     if (pathname == '/web/') {
       url += 'index.html';
     }
@@ -278,14 +280,14 @@ const verify = async (request, cookie) => {
   let reqCookies = request.headers.get('Cookie').split('; ');
   let bypassServer = CUSTOM_OPTIONS.BYPASS_SERVER;
   for (let i = 0; i < reqCookies.length; i++) {
-      let cookie = reqCookies[i];
-      if (cookie.startsWith('BingAI_Pass_Server')) {
-          let tmp = cookie.replace('BingAI_Pass_Server=', '');
-          if (tmp !== '') {
-              bypassServer = tmp;
-              break;
-          }
+    let cookie = reqCookies[i];
+    if (cookie.startsWith('BingAI_Pass_Server')) {
+      let tmp = cookie.replace('BingAI_Pass_Server=', '');
+      if (tmp !== '') {
+        bypassServer = tmp;
+        break;
       }
+    }
   }
 
   const currentUrl = new URL(request.url);
@@ -304,16 +306,16 @@ const verify = async (request, cookie) => {
   const res = await fetch(newReq)
   if (res.status != 200) {
     if (res.status === 451) {
-      return Response.json({ code: 451, message: "Verification Failed", data: null}, { status: 451 })
+      return Response.json({ code: 451, message: "Verification Failed", data: null }, { status: 451 })
     }
-    return Response.json({ code:500, message: "Server Error", data: null }, { status: res.status })
+    return Response.json({ code: 500, message: "Server Error", data: null }, { status: res.status })
   }
   const resData = await res.json();
 
   const cookies = resData.result.cookies.split('; ')
   const newRes = Response.json(JSON.stringify(resData));
   for (let v of cookies) {
-    newRes.headers.append('Set-Cookie', v+'; path=/');
+    newRes.headers.append('Set-Cookie', v + '; path=/');
   }
   return newRes;
 };
@@ -334,19 +336,19 @@ const pass = async (request, cookie) => {
   let reqCookies = request.headers.get('Cookie').split('; ');
   let bypassServer = CUSTOM_OPTIONS.BYPASS_SERVER;
   for (let i = 0; i < reqCookies.length; i++) {
-      let cookie = reqCookies[i];
-      if (cookie.startsWith('BingAI_Pass_Server')) {
-          let tmp = cookie.replace('BingAI_Pass_Server=', '');
-          if (tmp !== '') {
-              bypassServer = tmp;
-              break;
-          }
+    let cookie = reqCookies[i];
+    if (cookie.startsWith('BingAI_Pass_Server')) {
+      let tmp = cookie.replace('BingAI_Pass_Server=', '');
+      if (tmp !== '') {
+        bypassServer = tmp;
+        break;
       }
+    }
   }
 
   let req = {
     'IG': resqBody['IG'],
-    'iframeid': "local-gen-"+crypto.randomUUID(),
+    'iframeid': "local-gen-" + crypto.randomUUID(),
     'cookies': cookie,
     'convId': '',
     'rid': '',
@@ -362,7 +364,7 @@ const pass = async (request, cookie) => {
 
 const login = async (url, headers) => {
   console.log(url)
-  const newReq = new Request(BING_ORIGIN+'/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2fchat%3fq%3dBing%2bAI%26FORM%3dhpcodx%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=001DD71D5A386F753B1FC3055B306E8F', {
+  const newReq = new Request(BING_ORIGIN + '/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2fchat%3fq%3dBing%2bAI%26FORM%3dhpcodx%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=001DD71D5A386F753B1FC3055B306E8F', {
     method: 'GET',
     headers: headers,
     redirect: 'manual',
@@ -377,14 +379,17 @@ const login = async (url, headers) => {
  * @returns
  */
 const bingapi = async (request, cookie) => {
+  if (!CUSTOM_OPTIONS.Go_Proxy_BingAI_BLANK_API_KEY && CUSTOM_OPTIONS.APIKEY == '') {
+    CUSTOM_OPTIONS.APIKEY = 'sk-' + randomString(32);
+  }
   const currentUrl = new URL(request.url);
   if ((currentUrl.pathname.startsWith('/v1/models/')) || (currentUrl.pathname.startsWith('/api/v1/models/'))) {
-    return bingapiModel(request, Object.assign({cookie: cookie}, CUSTOM_OPTIONS));
+    return bingapiModel(request, Object.assign({ cookie: cookie }, CUSTOM_OPTIONS));
   }
-  if ((currentUrl.pathname === '/v1/models') || (currentUrl.pathname === '/api/v1/models')) {
-    return bingapiModels(request, Object.assign({cookie: cookie}, CUSTOM_OPTIONS));
+  if (currentUrl.pathname.startsWith('/v1/models') || currentUrl.pathname.startsWith('/api/v1/models')) {
+    return bingapiModels(request, Object.assign({ cookie: cookie }, CUSTOM_OPTIONS));
   }
-  if ((currentUrl.pathname === '/v1/chat/completions') || (currentUrl.pathname === '/api/v1/chat/completions')) {
+  if (currentUrl.pathname.startsWith('/v1/chat/completions') || currentUrl.pathname.startsWith('/api/v1/chat/completions')) {
     if (request.method == 'OPTIONS') {
       return Response.json({ code: 200, message: 'OPTIONS', data: null }, {
         headers: {
@@ -398,7 +403,23 @@ const bingapi = async (request, cookie) => {
     if (request.method != 'POST') {
       return Response.json({ code: 405, message: 'Method Not Allowed', data: null }, { status: 405 });
     }
-    return bingapiChat(request, Object.assign({cookie: cookie}, CUSTOM_OPTIONS));
+    return bingapiChat(request, Object.assign({ cookie: cookie }, CUSTOM_OPTIONS));
+  }
+  if (currentUrl.pathname.startsWith('/v1/images/generations') || currentUrl.pathname.startsWith('/api/v1/images/generations')) {
+    if (request.method == 'OPTIONS') {
+      return Response.json({ code: 200, message: 'OPTIONS', data: null }, {
+        headers: {
+          "Allow": "POST, OPTIONS",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Cookie",
+        }
+      });
+    }
+    if (request.method != 'POST') {
+      return Response.json({ code: 405, message: 'Method Not Allowed', data: null }, { status: 405 });
+    }
+    return bingapiImage(request, Object.assign({ cookie: cookie }, CUSTOM_OPTIONS));
   }
   return Response.json({ code: 404, message: 'API No Found', data: null }, { status: 404 });
 };
@@ -411,17 +432,27 @@ export default {
    * @param {*} ctx
    * @returns
    */
-  async fetch (request, env, ctx) {
+  async fetch(request, env, ctx) {
+    CUSTOM_OPTIONS.KievRPSSecAuth = env.USER_KievRPSSecAuth || '';
+    CUSTOM_OPTIONS._RwBf = env.USER_RwBf || '';
+    CUSTOM_OPTIONS.MUID = env.USER_MUID || '';
+    CUSTOM_OPTIONS._U = env.Go_Proxy_BingAI_USER_TOKEN || '';
+    CUSTOM_OPTIONS.BYPASS_SERVER = env.BYPASS_SERVER || '';
+    CUSTOM_OPTIONS.APIKEY = env.APIKEY || '';
+    CUSTOM_OPTIONS.Go_Proxy_BingAI_BLANK_API_KEY = (env.Go_Proxy_BingAI_BLANK_API_KEY != '' && env.Go_Proxy_BingAI_BLANK_API_KEY != undefined &&env.Go_Proxy_BingAI_BLANK_API_KEY != null);
+    CUSTOM_OPTIONS.INFO = env.INFO || '';
+    CUSTOM_OPTIONS.NIGHTLY = (env.NIGHTLY != '' && env.NIGHTLY != undefined && env.NIGHTLY != null);
+
     const currentUrl = new URL(request.url);
     if (WEB_CONFIG.WORKER_URL == '') {
-        WEB_CONFIG.WORKER_URL = currentUrl.origin;
+      WEB_CONFIG.WORKER_URL = currentUrl.origin;
     }
     // if (currentUrl.pathname === '/' || currentUrl.pathname.startsWith('/github/')) {
     if (currentUrl.pathname === '/' || currentUrl.pathname.indexOf('/web/') === 0) {
       return home(currentUrl.pathname);
     }
     if (currentUrl.pathname.startsWith('/sysconf')) {
-      return Response.json({ code: 200, message: 'success', data: { isSysCK: false, isAuth: true } })
+      return Response.json({ code: 200, message: 'success', data: { isSysCK: false, isAuth: true, info: CUSTOM_OPTIONS.INFO } })
     }
     let targetUrl;
     if (currentUrl.pathname.includes('/sydney')) {
@@ -487,7 +518,9 @@ export default {
     }
     if (!cookie.includes('_U=')) {
       if (CUSTOM_OPTIONS._U.length !== 0) {
-        cookies += '; _U=' + CUSTOM_OPTIONS._U;
+        const _Us = CUSTOM_OPTIONS._U.split(',');
+        console.log(_Us[getRandomInt(0, _Us.length)])
+        cookies += '; _U=' + _Us[getRandomInt(0, _Us.length)];
       }
     }
 
@@ -497,7 +530,7 @@ export default {
     if (currentUrl.pathname === '/challenge/verify') {
       return verify(request, cookies);
     }
-    if (currentUrl.pathname.indexOf('/v1') === 0 || currentUrl.pathname.indexOf('/api/v1') === 0) {
+    if (currentUrl.pathname.startsWith('/v1') || currentUrl.pathname.startsWith('/api/v1')) {
       return bingapi(request, cookies);
     }
     if (currentUrl.pathname === '/pass') {
