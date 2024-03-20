@@ -33,13 +33,14 @@ const { isShowChatServiceSelectModal } = storeToRefs(chatStore);
 const userStore = useUserStore();
 const localVersion = __APP_INFO__.version;
 const lastVersion = ref('加载中...');
-const { historyEnable, themeMode, uiVersion, fullCookiesEnable, cookiesStr, enterpriseEnable, customChatNum, gpt4tEnable, sydneyEnable, sydneyPrompt, passServer } = storeToRefs(userStore);
+const { historyEnable, themeMode, uiVersion, langRegion, fullCookiesEnable, cookiesStr, enterpriseEnable, customChatNum, gpt4tEnable, sydneyEnable, sydneyPrompt, passServer } = storeToRefs(userStore);
 
 let cookiesEnable = ref(false);
 let cookies = ref('');
 let history = ref(true);
 let themeModeSetting = ref('auto');
 let uiVersionSetting = ref('v3');
+let langRegionSetting = ref('CN');
 let theme = ref(inject('theme'));
 
 let settingIconStyle = ref({
@@ -163,6 +164,17 @@ const uiVersionOptions = ref([
   }
 ]);
 
+const langRegionOptions = ref([
+  {
+    label: '中文优先',
+    value: 'CN',
+  },
+  {
+    label: '英文优先',
+    value: 'US',
+  }
+]);
+
 onMounted(() => {
   if (themeMode.value == 'light') {
     settingIconStyle.value = { filter: 'invert(0%)' }
@@ -231,7 +243,6 @@ const handleSelect = async (key: string) => {
       {
         CIB.showNotebook();
         const galileoIndex = CIB.config.sydney.request.optionsSets.indexOf('galileo');
-        console.log(galileoIndex)
         if (galileoIndex > -1) {
           CIB.config.sydney.request.optionsSets[galileoIndex] = 'clgalileo';
         }
@@ -242,8 +253,10 @@ const handleSelect = async (key: string) => {
         };
         await sleep(25);
         const serpEle = document.querySelector('cib-serp');
-        const disclaimer = serpEle?.shadowRoot?.querySelector('cib-ai-disclaimer') as HTMLElement;
-        disclaimer?.shadowRoot?.querySelector('.disclaimer')?.remove();
+        const notebook = serpEle?.shadowRoot?.querySelector('cib-notebook');
+        const disclaimer = notebook?.shadowRoot?.querySelector('cib-ai-disclaimer');
+        disclaimer?.shadowRoot?.querySelector('div')?.remove();
+        disclaimer?.shadowRoot?.querySelector('div')?.remove();
       }
       break;
     case navType.setting:
@@ -324,6 +337,7 @@ const settingMenu = (key: string) => {
         history.value = historyEnable.value;
         themeModeSetting.value = themeMode.value;
         uiVersionSetting.value = uiVersion.value;
+        langRegionSetting.value = langRegion.value;
         enterpriseSetting.value = enterpriseEnable.value;
         customChatNumSetting.value = customChatNum.value;
         gpt4tSetting.value = gpt4tEnable.value;
@@ -388,6 +402,10 @@ const saveAdvancedSetting = () => {
   if (passServerSetting.value && passServerSetting.value.startsWith('http')) {
     userStore.setPassServer(passServerSetting.value)
   }
+  if (langRegion.value != langRegionSetting.value) {
+    langRegion.value = langRegionSetting.value;
+    _G.Region = langRegionSetting.value;
+  }
 
   const serpEle = document.querySelector('cib-serp');
   const sidepanel = serpEle?.shadowRoot?.querySelector('cib-conversation')?.querySelector('cib-side-panel')?.shadowRoot?.querySelector('.main')
@@ -395,14 +413,14 @@ const saveAdvancedSetting = () => {
   const threadsContainer = sidepanel?.querySelector('.threads-container') as HTMLElement;
   if (!isMobile()) {
     if (history.value && userStore.getUserToken() && !enterpriseEnable.value) {
-      if (tmpuiVersion === 'v2') {
-        threadsHeader.style.display = 'flex'
-        threadsContainer.style.display = 'block'
-      } else {
+      if (tmpuiVersion === 'v1') {
         CIB.vm.sidePanel.panels = [
           { type: 'threads', label: '最近的活动' },
           { type: 'plugins', label: '插件' }
         ]
+      } else {
+        threadsHeader.style.display = 'flex'
+        threadsContainer.style.display = 'block'
       }
     } else {
       if (tmpuiVersion === 'v2') {
@@ -861,6 +879,9 @@ const autoPassCFChallenge = async () => {
           </NFormItem>
         </NGridItem>
       </NGrid>
+      <NFormItem path="langRegion" label="语言理解能力">
+        <NSelect v-model:value="langRegionSetting" :options="langRegionOptions" size="large" placeholder="语言理解能力" />
+      </NFormItem>
       <NFormItem path="sydneyPrompt" label="人机验证服务器">
         <NInput size="large" v-model:value="passServerSetting" type="text" placeholder="人机验证服务器" />
       </NFormItem>
