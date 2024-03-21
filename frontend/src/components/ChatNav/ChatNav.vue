@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { h, ref, onMounted, inject, defineComponent, render } from 'vue';
-import { NDropdown, type DropdownOption, NModal, NInput, NInputNumber, NButton, NGrid, NGridItem, useMessage, NImage, NForm, NFormItem, NSwitch, NTag, NSelect, NSpin, NP, NA, NConfigProvider, NSpace, NRadio, NRadioGroup, lightTheme, darkTheme, useOsTheme, type GlobalTheme } from 'naive-ui';
+import { NDropdown, type DropdownOption, NModal, NInput, NInputNumber, NButton, NGrid, NGridItem, useMessage, NImage, NForm, NFormItem, NSwitch, NTag, NSelect, NSpin, NP, NA, NConfigProvider, NSpace, NRadio, NRadioGroup, NTooltip, lightTheme, darkTheme, useOsTheme, type GlobalTheme } from 'naive-ui';
 import conversationCssText from '@/assets/css/conversation.css?raw';
 import settingSvgUrl from '@/assets/img/setting.svg?url';
 import { usePromptStore } from '@/stores/modules/prompt';
@@ -33,7 +33,7 @@ const { isShowChatServiceSelectModal } = storeToRefs(chatStore);
 const userStore = useUserStore();
 const localVersion = __APP_INFO__.version;
 const lastVersion = ref('加载中...');
-const { historyEnable, themeMode, uiVersion, langRegion, fullCookiesEnable, cookiesStr, enterpriseEnable, customChatNum, gpt4tEnable, sydneyEnable, sydneyPrompt, passServer } = storeToRefs(userStore);
+const { historyEnable, themeMode, uiVersion, langRegion, autoReopenMic, fullCookiesEnable, cookiesStr, enterpriseEnable, customChatNum, gpt4tEnable, sydneyEnable, sydneyPrompt, passServer } = storeToRefs(userStore);
 
 let cookiesEnable = ref(false);
 let cookies = ref('');
@@ -42,6 +42,7 @@ let themeModeSetting = ref('auto');
 let uiVersionSetting = ref('v3');
 let langRegionSetting = ref('CN');
 let theme = ref(inject('theme'));
+let autoReopenMicSetting = ref(true);
 
 let settingIconStyle = ref({
   filter: 'invert(70%)',
@@ -341,6 +342,7 @@ const settingMenu = (key: string) => {
         enterpriseSetting.value = enterpriseEnable.value;
         customChatNumSetting.value = customChatNum.value;
         gpt4tSetting.value = gpt4tEnable.value;
+        autoReopenMicSetting.value = autoReopenMic.value;
         sydneySetting.value = sydneyEnable.value;
         sydneyPromptSetting.value = sydneyPrompt.value;
         passServerSetting.value = passServer.value;
@@ -396,6 +398,7 @@ const saveAdvancedSetting = () => {
   customChatNum.value = customChatNumSetting.value;
   const tmpGpt4t = gpt4tEnable.value, tmpSydney = sydneyEnable.value, tmpuiVersion = uiVersion.value;
   gpt4tEnable.value = gpt4tSetting.value;
+  autoReopenMic.value = autoReopenMicSetting.value;
   sydneyEnable.value = sydneySetting.value;
   sydneyPrompt.value = sydneyPromptSetting.value;
   uiVersion.value = uiVersionSetting.value;
@@ -788,7 +791,12 @@ const autoPassCFChallenge = async () => {
       <NGrid x-gap="0" :cols="2">
         <NGridItem>
           <NFormItem path="cookiesEnable" label="自动人机验证">
-            <NButton type="info" :loading="passingCFChallenge" @click="settingMenu('autoPassCFChallenge')">启动</NButton>
+            <NTooltip>
+              <template #trigger>
+                <NButton type="info" :loading="passingCFChallenge" @click="settingMenu('autoPassCFChallenge')">启动</NButton>
+              </template>
+              旧版本的人机验证, 现已完全自动代理通过
+            </NTooltip>
           </NFormItem>
         </NGridItem>
         <NGridItem>
@@ -871,6 +879,11 @@ const autoPassCFChallenge = async () => {
         <NGridItem>
           <NFormItem path="gpt4tEnable" label="GPT4 Turbo">
             <NSwitch v-model:value="gpt4tSetting" />
+          </NFormItem>
+        </NGridItem>
+        <NGridItem>
+          <NFormItem path="sydneyEnable" label="连续语音对话">
+            <NSwitch v-model:value="autoReopenMicSetting" />
           </NFormItem>
         </NGridItem>
         <NGridItem>
