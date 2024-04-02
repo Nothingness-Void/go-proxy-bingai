@@ -185,7 +185,7 @@ export async function bingapiChat(request, options) {
       description: prompt,
       contextType: 'WebPage',
       messageType: 'Context',
-      messageId: 'discover-web--page-ping-mriduna-----',
+      // messageId: 'discover-web--page-ping-mriduna-----',
     });
   }
 

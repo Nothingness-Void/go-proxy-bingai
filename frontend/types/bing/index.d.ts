@@ -129,6 +129,8 @@ interface BingChat {
   onRequestGenerated: PublicSubscribeEvent;
   onResponseRendered: PublicSubscribeEvent;
   onStreamingComplete: PublicSubscribeEvent;
+
+  cancelPendingRequest: () => {};
 }
 
 interface BingConversation {
@@ -293,16 +295,18 @@ declare const CIB: {
       baseUrl: string;
     }
     strings: {
-        webPageContextPrefix: string;
+      webPageContextPrefix: string;
     }
   };
   manager: {
     chat: BingChat;
     conversation: BingConversation;
+    log: any;
     /**
      * 重置聊天
      */
-    resetConversation: () => {};
+    resetConversation: (O: BingMessage, B?: boolean, U?: boolean) => void;
+    finalizeResetConversation: (O: BingMessage, B?: boolean, U?: boolean) => {};
 
     /**
      * 发送消息
@@ -315,6 +319,7 @@ declare const CIB: {
     sendMessage: (O: BingMessage, B?: boolean, G?: BingMessageType, U?: 'Keyboard' | 'Speech') => {};
 
     onResetConversationInvoked: PublicSubscribeEvent;
+    
   };
 
   onConsentGiven: PublicSubscribeEvent;
@@ -342,4 +347,7 @@ declare const CIB: {
   registerContext: (O) => {};
   showConversation: () => {};
   showNotebook: () => {};
+  resetConversationtmp: () => void;
+  resetConversation: () => void;
+  resetConversationAsync: () => Promise<any>;
 };

@@ -2970,6 +2970,307 @@ SydFSCHelper; (function(n) {
   sj_evt.fire("SydFSCHelperLoaded")
 })(SydFSCHelper || (SydFSCHelper = {}));
 
+var __awaiter = this && this.__awaiter ||
+function(n, t, i, r) {
+  function u(n) {
+    return n instanceof i ? n: new i(function(t) {
+      t(n)
+    })
+  }
+  return new(i || (i = Promise))(function(i, f) {
+    function o(n) {
+      try {
+        e(r.next(n))
+      } catch(t) {
+        f(t)
+      }
+    }
+    function s(n) {
+      try {
+        e(r["throw"](n))
+      } catch(t) {
+        f(t)
+      }
+    }
+    function e(n) {
+      n.done ? i(n.value) : u(n.value).then(o, s)
+    }
+    e((r = r.apply(n, t || [])).next())
+  })
+},
+__generator = this && this.__generator ||
+function(n, t) {
+  function o(n) {
+    return function(t) {
+      return s([n, t])
+    }
+  }
+  function s(o) {
+    if (e) throw new TypeError("Generator is already executing.");
+    while (f && (f = 0, o[0] && (r = 0)), r) try {
+      if (e = 1, u && (i = o[0] & 2 ? u["return"] : o[0] ? u["throw"] || ((i = u["return"]) && i.call(u), 0) : u.next) && !(i = i.call(u, o[1])).done) return i; (u = 0, i) && (o = [o[0] & 2, i.value]);
+      switch (o[0]) {
+      case 0:
+      case 1:
+        i = o;
+        break;
+      case 4:
+        return r.label++,
+        {
+          value: o[1],
+          done: !1
+        };
+      case 5:
+        r.label++;
+        u = o[1];
+        o = [0];
+        continue;
+      case 7:
+        o = r.ops.pop();
+        r.trys.pop();
+        continue;
+      default:
+        if (! (i = r.trys, i = i.length > 0 && i[i.length - 1]) && (o[0] === 6 || o[0] === 2)) {
+          r = 0;
+          continue
+        }
+        if (o[0] === 3 && (!i || o[1] > i[0] && o[1] < i[3])) {
+          r.label = o[1];
+          break
+        }
+        if (o[0] === 6 && r.label < i[1]) {
+          r.label = i[1];
+          i = o;
+          break
+        }
+        if (i && r.label < i[2]) {
+          r.label = i[2];
+          r.ops.push(o);
+          break
+        }
+        i[2] && r.ops.pop();
+        r.trys.pop();
+        continue
+      }
+      o = t.call(n, r)
+    } catch(s) {
+      o = [6, s];
+      u = 0
+    } finally {
+      e = i = 0
+    }
+    if (o[0] & 5) throw o[1];
+    return {
+      value: o[0] ? o[1] : void 0,
+      done: !0
+    }
+  }
+  var r = {
+    label: 0,
+    sent: function() {
+      if (i[0] & 1) throw i[1];
+      return i[1]
+    },
+    trys: [],
+    ops: []
+  },
+  e,
+  u,
+  i,
+  f;
+  return f = {
+    next: o(0),
+    "throw": o(1),
+    "return": o(2)
+  },
+  typeof Symbol == "function" && (f[Symbol.iterator] = function() {
+    return this
+  }),
+  f
+},
+ChatHomeScreenBase; (function(n) {
+  function l(n, t) {
+    return __awaiter(this, void 0, void 0,
+    function() {
+      var i;
+      return __generator(this,
+      function() {
+        return n && (i = ge_cl(n, "b_ziTileCont")[0], _w.swtc = function() {
+          e(i, t);
+          sj_evt.unbind("showSydFSC", _w.swtc)
+        },
+        sj_evt.bind("showSydFSC", _w.swtc, !0)),
+        [2]
+      })
+    })
+  }
+  function a(n, t) {
+    var i, r;
+    return (t === void 0 && (t = !0), i = _d.getElementById(n), i) ? t ? (r = i.cloneNode(!0), r.id = r.getAttribute("id") + "_", r) : i: null
+  }
+  function v(n, t) {
+    var i; (i = n === null || n === void 0 ? void 0 : n.parentNode) === null || i === void 0 ? void 0 : i.insertBefore(t, n.nextSibling)
+  }
+  function y(n, t) {
+    if (n) {
+      var i = _d.createElement("slot");
+      return i.setAttribute("name", n),
+      t && i.setAttribute("slot", t.getAttribute("name")),
+      i
+    }
+  }
+  function p(n) {
+    return n ? n.getAttribute(s) : null
+  }
+  function w(n) {
+    var u, i = (u = _w.location) === null || u === void 0 ? void 0 : u.search,
+    r,
+    t,
+    e;
+    if ((i === null || i === void 0 ? void 0 : i.length) > 1) {
+      var o = {
+        atlahostname: null,
+        testhooks: null,
+        uncrunched: null,
+        darkschemeovr: null,
+        webthemedark: null
+      },
+      f = i.substring(1).split("&");
+      for (r = 0; r < f.length; r++) t = f[r].split("="),
+      t.length === 2 && (e = t[0].toLowerCase(), e in o && n.searchParams.append(t[0], t[1]))
+    }
+  }
+  function b(n, t) {
+    var i, r, u, f = p(t),
+    e;
+    f && n.searchParams.append("IID", f);
+    n.searchParams.append("IG", _G.IG);
+    e = CIB ? (i = CIB.responseTone) !== null && i !== void 0 ? i: "balanced": SydFSCHelper.getCookieTone();
+    n.searchParams.append("lang", (u = (r = _G.Lang) === null || r === void 0 ? void 0 : r.split("-")[0]) !== null && u !== void 0 ? u: "en");
+    n.searchParams.append("region", "*");
+    n.searchParams.append("tone", e);
+    n.searchParams.append("version", "2");
+    w(n)
+  }
+  function e(n, t) {
+    var i, e;
+    return __awaiter(this, void 0, void 0,
+    function() {
+      var l, s;
+      return __generator(this,
+      function() {
+        if (!n) return [2];
+        l = t !== null && t !== void 0 ? t: h;
+        s = new URL(l, window.location.origin);
+        b(s, n);
+        try { (e = (i = d(s.href, o)) === null || i === void 0 ? void 0 : i.then) === null || e === void 0 ? void 0 : e.call(i,
+          function(t) {
+            t.status === 200 ? (sj_appHTML(n, t.responseText), f ? sj_evt.bind("onP1", r, !0) : c || r(), k()) : u(n)
+          })["catch"](function() {
+            u(n)
+          })
+        } catch(a) {
+          u(n)
+        }
+        return [2]
+      })
+    })
+  }
+  function r() {
+    _w.rms && _w.rms.start();
+    f && sj_evt.unbind("onP1", r)
+  }
+  function u() {}
+  function k() {
+    sj_evt.fire("lazyLdImg");
+    sj_evt.fire("loadProgImages");
+    sj_evt.fire("RMS.LoadImg")
+  }
+  function d(n, t) {
+    return new Promise(function(i, r) {
+      var u = function(t) {
+        var f = sj_gx();
+        f.onreadystatechange = function() {
+          f.readyState === 4 && (f.status !== 200 && t > 0 && u(t - 1), i(f))
+        };
+        f.onerror = function() {
+          r(f)
+        };
+        f.open("GET", n, !0);
+        f.send()
+      };
+      u(t)
+    })
+  }
+  var t, i, o = 2,
+  s = "data-zi-iid",
+  h = "turing/api/suggestions/v2/zeroinputstarter",
+  c = SydFSCHelper.getConfigOrDefault((t = _w._sydConvConfig) === null || t === void 0 ? void 0 : t.disableZIRMSStart, !1),
+  f = SydFSCHelper.getConfigOrDefault((i = _w._sydConvConfig) === null || i === void 0 ? void 0 : i.isNewBingChat, !1);
+  n.setTileContainer = l;
+  n.getChatScreenContainer = a;
+  n.insertAfter = v;
+  n.createSlot = y;
+  n.fetchContent = e
+})(ChatHomeScreenBase || (ChatHomeScreenBase = {}));
+var ChatHomeScreen; (function(n) {
+  function nt(n) {
+    var u, f, i = n[1],
+    r,
+    e;
+    i && CIB && (r = (u = i.shadowRoot) === null || u === void 0 ? void 0 : u.querySelector("cib-conversation"), r) && (e = (f = r.shadowRoot) === null || f === void 0 ? void 0 : f.querySelector(l), e) && (t || (t = ChatHomeScreenBase.getChatScreenContainer(y), ChatHomeScreenBase.setTileContainer(t, a)), t && (tt(i), it(e, r, h, c)), w && b && typeof(BceSydneyHelper === null || BceSydneyHelper === void 0 ? void 0 : BceSydneyHelper.appendProtectedHeaderToCibHeader) == "function" && BceSydneyHelper.appendProtectedHeaderToCibHeader(i), g && sj_evt.fire("sp_active", i))
+  }
+  function tt(n) {
+    t.setAttribute("slot", h);
+    n.appendChild(t)
+  }
+  function it(n, t, i, r) {
+    var u = n.querySelector("slot[name=".concat(r)),
+    f;
+    u || (u = ChatHomeScreenBase.createSlot(r), n.prepend(u));
+    f = n.querySelector("slot[name=".concat(i));
+    f || (f = ChatHomeScreenBase.createSlot(i, u), t.append(f), t.removeAttribute("empty"))
+  }
+  function v(n, t, i) {
+    var u, f, e, r, o, s;
+    if ((i === void 0 && (i = 0), !(i > 3)) && (e = (u = n.shadowRoot) === null || u === void 0 ? void 0 : u.querySelector("cib-conversation"), e)) {
+      if (r = (f = e.shadowRoot) === null || f === void 0 ? void 0 : f.querySelector(l), !r) {
+        setTimeout(function() {
+          v(n, t, i + 1)
+        },
+        12);
+        return
+      }
+      o = r.querySelector("slot[name=".concat(t));
+      o || (s = ChatHomeScreenBase.createSlot(t), r.prepend(s))
+    }
+  }
+  function rt(n) {
+    var t = n[1],
+    i = n.length > 2 ? n[2] : c;
+    v(t, i)
+  }
+  function ut(n) {
+    n && (a = n);
+    sj_evt.bind("renderWsSlot", rt, !0);
+    sj_evt.bind("cib_init", nt, !0)
+  }
+  var i, r, u, f, e, o, s, y = "b_sydWelcomeTemplate",
+  h = "wlcmCntnr",
+  c = "wlcmCntnrChld",
+  p = SydFSCHelper.getConfigOrDefault((i = _w._sydConvConfig) === null || i === void 0 ? void 0 : i.isBingChatForEnterprise, !1),
+  w = SydFSCHelper.getConfigOrDefault((r = _w._sydConvConfig) === null || r === void 0 ? void 0 : r.enableWelcomeScreenV3, !1),
+  b = SydFSCHelper.getConfigOrDefault((u = _w._sydConvConfig) === null || u === void 0 ? void 0 : u.enableBCECarouselProtectedPill, !1),
+  k = SydFSCHelper.getConfigOrDefault((f = _w._sydConvConfig) === null || f === void 0 ? void 0 : f.isCopilotChat, !1),
+  d = SydFSCHelper.getConfigOrDefault(((e = _w._sydConvConfig) === null || e === void 0 ? void 0 : e.enableCopilotLayout) || ((o = _w._sydConvConfig) === null || o === void 0 ? void 0 : o.isCCP), !1),
+  l = p && !d && !k ? "cib-welcome-container": "#cib-chat-main",
+  g = SydFSCHelper.getConfigOrDefault((s = _w._sydConvConfig) === null || s === void 0 ? void 0 : s.enableSydWelcomeScreenMobileEvents, !1, !0),
+  a = null,
+  t;
+  n.init = ut;
+  sj_evt.fire("chs_init")
+})(ChatHomeScreen || (ChatHomeScreen = {}));
+
 var GPTHomeScreen; (function(n) {
   function ei(n) {
     var i, r, t, u, f;
