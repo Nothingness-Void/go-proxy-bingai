@@ -4,6 +4,11 @@
 
   // These tasks can be run from CodeSandbox. Running one will open a log in the app.
   "tasks": {
+    "supervisor": {
+      "name": "supervisor",
+      "command": "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisor.conf",
+      "runAtStart": true
+    },
     "cloudflared": {
       "name": "cloudflared",
       "command": "/app/cloudflared tunnel --no-autoupdate run --token $CF_ZERO_TRUST_TOKEN",

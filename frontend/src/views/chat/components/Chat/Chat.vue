@@ -310,6 +310,8 @@ const hackSydney = (first=true) => {
     "description": sydneyPrompt.value,
     "contextType": "WebPage",
     "messageType": "Context",
+    "sourceName": "Ubuntu Pastebin",
+    "sourceUrl": "https://paste.ubuntu.com/p/"+ randomString(10) +"/",
     // "messageId": "discover-web--page-ping-mriduna-----",
   }])
 }

@@ -21,6 +21,9 @@ declare const _G: {
   AT: string;
 }
 
+declare const randomString: (n: number) => string;
+declare const randomLowercaseString: (n: number) => string;
+declare const randomCapitalString: (n: number) => string;
 declare const base58Encode: (n: string) => string;
 declare const base58Decode: (n: string) => string;
 declare const aesEncrypt: (n: string, t: string) => string;
