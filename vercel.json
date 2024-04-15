@@ -47,6 +47,10 @@
       "dest": "/api/edgesvc.go"
     },
     {
+      "src": "/th/.*",
+      "dest": "/api/th.go"
+    },
+    {
       "src": "/web/.*",
       "dest": "/api/web.go"
     },

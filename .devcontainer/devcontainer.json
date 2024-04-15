@@ -1,6 +1,6 @@
 {
   "name": "Go Proxy BingAI",
-  "build": {
-    "dockerfile": "./Dockerfile"
-  }
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "go-proxy-bingai",
+  "workspaceFolder": "/app"
 }

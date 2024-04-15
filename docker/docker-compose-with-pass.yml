@@ -21,3 +21,4 @@ services:
       # - USER_RwBf=xxx
       # - USER_MUID=xxx
       - APIKEY=sk-xxx
+      - CF_ZERO_TRUST_TOKEN=CF_ZERO_TRUST_TOKEN
