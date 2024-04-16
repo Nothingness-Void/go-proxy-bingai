@@ -13,3 +13,5 @@ RUN rm go-bingai-pass-linux-amd64.tar.gz go-proxy-bingai-linux-amd64.tar.gz
 COPY supervisor.conf /etc/supervisor/conf.d/supervisor.conf
 
 EXPOSE 8080 45678 9005
+
+CMD [ "/usr/bin/bash", "-c", "while true;do sleep 3600;done" ]
