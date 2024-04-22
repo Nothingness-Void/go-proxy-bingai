@@ -5,8 +5,6 @@ services:
     image: zklcdc/go-proxy-bingai:latest-with-pass
     container_name: go-proxy-bingai-with-pass
     restart: always
-    depends_on:
-      - go-bingai-pass
     ports:
       - 8080:8080
       - 45678:45678

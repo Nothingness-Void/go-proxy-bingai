@@ -87,7 +87,7 @@ func ImageHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, img := range imgs {
 		resp.Data = append(resp.Data, imageData{
-			Url: img,
+			Url: strings.Replace(img, "http://localhost:"+common.PORT+"/th", common.BING_SOURCE_URL.String(), 1),
 		})
 	}
 
