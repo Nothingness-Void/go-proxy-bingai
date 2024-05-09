@@ -1,4 +1,3 @@
-import { brotli_decode } from "./bjs.js"
 import { bingapiModels, bingapiModel, bingapiChat, bingapiImage, getRandomIP } from "./bingapi.js"
 
 // 同查找 _U 一样, 查找 KievRPSSecAuth 的值并替换下方的xxx
@@ -12,6 +11,8 @@ const CUSTOM_OPTIONS = {
   APIKEY: '',
   Go_Proxy_BingAI_BLANK_API_KEY: false,
 
+  Go_Proxy_BingAI_AUTH_KEY: '',
+
   INFO: '',
   NIGHTLY: false,
 }
@@ -19,6 +20,9 @@ const CUSTOM_OPTIONS = {
 const WEB_CONFIG = {
   WORKER_URL: '', // 如无特殊需求请，保持为''
 };
+
+const RAND_IP_COOKIE_NAME = 'BingAI_Rand_IP';
+const AUTH_KEY_COOKIE_NAME = 'BingAI_Auth_Key';
 
 const SYDNEY_ORIGIN = 'https://sydney.bing.com';
 const BING_ORIGIN = 'https://www.bing.com';
@@ -79,55 +83,30 @@ const randomString = (e) => {
   return n;
 }
 
+const replaceURL = (body) => {
+  body = body.replaceAll(BING_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
+  body = body.replaceAll(EDGE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
+  body = body.replaceAll(BING_SOURCE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/th');
+  body = body.replaceAll(DESIGNER_CDN_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-cdn');
+  body = body.replaceAll(DESIGNER_APP_EDOG_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app-edog');
+  body = body.replaceAll(DESIGNER_DOCUMENT_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-document');
+  body = body.replaceAll(DESIGNER_USERASSETS_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-userassets');
+  body = body.replaceAll(DESIGNER_MEDIASUGGESTION_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-mediasuggestion');
+  body = body.replaceAll(DESIGNER_RTC_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-rtc');
+  body = body.replaceAll(DESIGNER_APP_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app');
+  body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer');
+  return body
+}
+
 const rewriteBody = async (res) => {
   const content_type = res.headers.get("Content-Type") || "";
-  const content_encoding = res.headers.get("Content-Encoding") || "";
   let encoding = null;
   let body = res.body;
-  if (content_type.startsWith("text/html")) {
-    let decodedContent = null;
-    if (content_encoding == 'br') {
-      decodedContent = new TextDecoder("utf-8").decode(brotli_decode(new Int8Array(await res.clone().arrayBuffer())));
-      encoding = 'gzip';
-    } else {
-      decodedContent = new TextDecoder("utf-8").decode(new Int8Array(await res.clone().arrayBuffer()));
-    }
+  if (content_type.startsWith("text/html") || res.url.endsWith("js")) {
+    let decodedContent = new TextDecoder("utf-8").decode(new Int8Array(await res.clone().arrayBuffer()));
     if (decodedContent) {
       // @ts-ignore
-      body = decodedContent.replaceAll(BING_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-      body = body.replaceAll(EDGE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-      body = body.replaceAll(BING_SOURCE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/th');
-      body = body.replaceAll(DESIGNER_CDN_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-cdn');
-      body = body.replaceAll(DESIGNER_APP_EDOG_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app-edog');
-      body = body.replaceAll(DESIGNER_DOCUMENT_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-document');
-      body = body.replaceAll(DESIGNER_USERASSETS_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-userassets');
-      body = body.replaceAll(DESIGNER_MEDIASUGGESTION_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-mediasuggestion');
-      body = body.replaceAll(DESIGNER_RTC_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-rtc');
-      body = body.replaceAll(DESIGNER_APP_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app');
-      body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer');
-    }
-  } else if (res.url.endsWith("js")) {
-    let decodedContent = null;
-    if (content_encoding == 'br') {
-      decodedContent = new TextDecoder("utf-8").decode(brotli_decode(new Int8Array(await res.clone().arrayBuffer())));
-      encoding = 'gzip';
-    } else {
-      decodedContent = new TextDecoder("utf-8").decode(new Int8Array(await res.clone().arrayBuffer()));
-    }
-    if (decodedContent) {
-      // @ts-ignore
-      body = decodedContent.replaceAll(BING_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-      body = body.replaceAll(EDGE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-      body = body.replaceAll(BING_SOURCE_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/th');
-      body = body.replaceAll(BING_SR_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""));
-      body = body.replaceAll(DESIGNER_CDN_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-cdn');
-      body = body.replaceAll(DESIGNER_APP_EDOG_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app-edog');
-      body = body.replaceAll(DESIGNER_DOCUMENT_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-document');
-      body = body.replaceAll(DESIGNER_USERASSETS_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-userassets');
-      body = body.replaceAll(DESIGNER_MEDIASUGGESTION_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-mediasuggestion');
-      body = body.replaceAll(DESIGNER_RTC_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-rtc');
-      body = body.replaceAll(DESIGNER_APP_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer-app');
-      body = body.replaceAll(DESIGNER_ORIGIN.replace("http://", "").replace("https://", ""), WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", "") + '/designer');
+      body = replaceURL(decodedContent);
     }
   }
   return { body, encoding };
@@ -368,7 +347,6 @@ const pass = async (request, cookie) => {
 
 
 const login = async (url, headers) => {
-  console.log(url)
   const newReq = new Request(BING_ORIGIN + '/fd/auth/signin?action=interactive&provider=windows_live_id&return_url=https%3a%2f%2fwww.bing.com%2fchat%3fq%3dBing%2bAI%26FORM%3dhpcodx%26wlsso%3d1%26wlexpsignin%3d1&src=EXPLICIT&sig=001DD71D5A386F753B1FC3055B306E8F', {
     method: 'GET',
     headers: headers,
@@ -447,6 +425,7 @@ export default {
     CUSTOM_OPTIONS.Go_Proxy_BingAI_BLANK_API_KEY = (env.Go_Proxy_BingAI_BLANK_API_KEY != '' && env.Go_Proxy_BingAI_BLANK_API_KEY != undefined &&env.Go_Proxy_BingAI_BLANK_API_KEY != null);
     CUSTOM_OPTIONS.INFO = env.INFO || '';
     CUSTOM_OPTIONS.NIGHTLY = (env.NIGHTLY != '' && env.NIGHTLY != undefined && env.NIGHTLY != null);
+    CUSTOM_OPTIONS.Go_Proxy_BingAI_AUTH_KEY = env.Go_Proxy_BingAI_AUTH_KEY || '';
 
     const currentUrl = new URL(request.url);
     if (WEB_CONFIG.WORKER_URL == '') {
@@ -457,7 +436,24 @@ export default {
       return home(currentUrl.pathname);
     }
     if (currentUrl.pathname.startsWith('/sysconf')) {
-      return Response.json({ code: 200, message: 'success', data: { isSysCK: false, isAuth: true, info: CUSTOM_OPTIONS.INFO } })
+      let isAuth = true;
+      if (CUSTOM_OPTIONS.Go_Proxy_BingAI_AUTH_KEY.length !== 0) {
+        const cookieStr = request.headers.get('Cookie') || '';
+        let cookieObjects = {};
+        cookieStr.split(';').forEach(item => {
+          if (!item) {
+            return;
+          }
+          const arr = item.split('=');
+          const key = arr[0].trim();
+          const val = arr.slice(1, arr.length+1).join('=').trim();
+          cookieObjects[key] = val;
+        })
+        if (cookieObjects[AUTH_KEY_COOKIE_NAME] !== CUSTOM_OPTIONS.Go_Proxy_BingAI_AUTH_KEY) {
+          isAuth = false;
+        }
+      }
+      return Response.json({ code: 200, message: 'success', data: { isSysCK: false, isAuth: isAuth, info: CUSTOM_OPTIONS.INFO } })
     }
     let targetUrl;
     if (currentUrl.pathname.startsWith('/sydney')) {
@@ -530,7 +526,6 @@ export default {
     if (!cookie.includes('_U=')) {
       if (CUSTOM_OPTIONS._U.length !== 0) {
         const _Us = CUSTOM_OPTIONS._U.split(',');
-        console.log(_Us[getRandomInt(0, _Us.length)])
         cookies += '; _U=' + _Us[getRandomInt(0, _Us.length)];
       }
     }
@@ -547,6 +542,21 @@ export default {
     if (currentUrl.pathname === '/pass') {
       return pass(request, cookies);
     }
+
+    const cookieStr = cookies;
+    let cookieObjects = {};
+    cookieStr.split(';').forEach(item => {
+      if (!item) {
+        return;
+      }
+      const arr = item.split('=');
+      const key = arr[0].trim();
+      const val = arr.slice(1, arr.length+1).join('=').trim();
+      cookieObjects[key] = val;
+    })
+    delete cookieObjects[RAND_IP_COOKIE_NAME];
+
+    cookies = Object.keys(cookieObjects).map(key => key + '=' + cookieObjects[key]).join('; ');
 
     newHeaders.set('Cookie', cookies);
     const oldUA = request.headers.get('user-agent') || '';

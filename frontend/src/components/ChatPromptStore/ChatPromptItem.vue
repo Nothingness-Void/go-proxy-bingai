@@ -27,7 +27,7 @@ const showEditPromptPop = (item: IPrompt) => {
 </script>
 
 <template>
-  <NThing class="hover:bg-gray-100 cursor-pointer p-5">
+  <NThing class="hover:bg-gray-400 dark:md:hover:bg-slate-800 cursor-pointer p-5">
     <template #description>
       <NTag type="info">
         <span class="inline-block max-w-[120px] xl:max-w-[650px] overflow-hidden text-ellipsis">{{ source.act }}</span>

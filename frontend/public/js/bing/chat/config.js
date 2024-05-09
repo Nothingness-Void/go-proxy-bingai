@@ -31,9 +31,10 @@ _w['_sydConvConfig'] = {
   enableGetChats: true,
   enableThreadSync: true,
   enableFlux3P: true,
-  sydOptionSets: 'uquopt,sunoupsell,hourthrot,codeintfile,gndlogcf,vidtoppb,gptv1desc2',
-  voiceSrOptions: 'cdxslang',
-  sydIDs: 'bgstreamcf,ntbkgoldcf,qnacnt,nodescf,slang,cdxslang,vnextr100,vnext100,vnextvoice,315minlengh,crtrv3,romiccf,scmcbasecf,ssadsno2tcfg,adsltmdsc,cmcpupsalltf,sunoupsell,0215wcrwips0,313dynaplfs0,0312hrthrot,0228elecgnds0,bingfc,228pyfile,ecipc,xapmons0,kcclickthru,kcclickt,0225unsticky0,satrcas0,308videopb,0317dc1pros0',
+  sydOptionSets: 'bflxvoice,enstmdf,rcaldictans,gndlogcf,sapsgrd,localreducehho,paydetec,gptv1desc3,gptvmv3,gptvnocon',
+  voiceSrOptions: 'segto07,tso15',
+  sydIDs: 'orcacrtrnewcf,codecrtv2cf,tcrtrv3,voicedup2,enziknavc,translnochr,dynhtrr,caccaconsccf,415dicts0,0411dylbs0,0306flows0,kcgmm2cf,sapsgrd,0404redhoo,418paydetec,0325phones0,reduceretrycf,3daytone,exptone,sstoprevcf',
+  balTone: 'galileo',
   userMailId: randomString(Math.round(Math.random() * 16)) + '@' + randomLowercaseString(Math.round(Math.random() * 12)) + '.com',
   username: randomString(Math.round(Math.random() * 16)),
   balTone: 'galileo',
@@ -42,7 +43,7 @@ _w['_sydConvConfig'] = {
   freeSydneyDesignerIconUrl: '/rp/l8iFubC9EgDGvKo7xeNIvSQwikU.png',
   freeSydneyShopperIconUrl: '/rp/k_s3zfEmrUri89BYcZH2O4eCqlU.png',
   userAnID: crypto.randomUUID().replace(/-/g, '').toUpperCase(),
-  PLoadIID: 'SERP.5090',
+  PLoadIID: 'SERP.5089',
   isMSAAuthenticated: true,
   enableThreads: true,
   isBingUserSignedIn: true,
@@ -102,6 +103,9 @@ _w['_sydConvConfig'] = {
   },
   {
     value: '.html'
+  },
+  {
+    value: '.pdf'
   }],
   audioFileExtensions: [{
     value: '.wav'
@@ -460,6 +464,9 @@ _w['_sydConvConfig'] = {
   multimediaSearchFormCode: 'IACMIR',
   multimediaSearchEnableMediaCanvas: true,
   multimediaSearchMaxImageCount: 5,
+  // GPT 4 Turbo
+  enableTurboTone: false,
+  enableGPT4TurboSwitch: false,
 };
 _w['_sydThreads'] = {
   threads: [],
@@ -1647,6 +1654,11 @@ if (UserStoreGet('enterpriseEnable')) {
   _w['_sydConvTranslation']['warmWelcomeTitle'] = 'Bing Chat Enterprise'
   _w['_sydConvTranslation']['welcomeSubtitleText'] = '由 AI 支持的适用于 Web 的 Copilot'
   _w['_sydConvTranslation']['inputRaiLabel'] = '你的个人和公司数据在此聊天中受到保护'
+}
+
+if (UserStoreGet('copilotProEnable')) {
+  _w['_sydConvConfig']['enableTurboTone'] = true
+  _w['_sydConvConfig']['enableGPT4TurboSwitch'] = true
 }
 
 _G.Region = UserStoreGet('langRegion') || 'CN'

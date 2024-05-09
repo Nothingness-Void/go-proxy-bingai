@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { h, ref, onMounted, inject, defineComponent, render } from 'vue';
-import { NDropdown, type DropdownOption, NModal, NInput, NInputNumber, NButton, NGrid, NGridItem, useMessage, NImage, NForm, NFormItem, NSwitch, NTag, NSelect, NSpin, NP, NA, NConfigProvider, NSpace, NRadio, NRadioGroup, NTooltip, lightTheme, darkTheme, useOsTheme, type GlobalTheme } from 'naive-ui';
+import { NDropdown, type DropdownOption, NModal, NInput, NInputNumber, NButton, NGrid, NGridItem, useMessage, NImage, NForm, NFormItem, NSwitch, NTag, NSelect, NSpin, NP, NA, NConfigProvider, NSpace, NRadio, NRadioGroup, NTooltip, NIcon, lightTheme, darkTheme, useOsTheme, type GlobalTheme } from 'naive-ui';
 import conversationCssText from '@/assets/css/conversation.css?raw';
 import settingSvgUrl from '@/assets/img/setting.svg?url';
 import { usePromptStore } from '@/stores/modules/prompt';
@@ -33,7 +33,7 @@ const { isShowChatServiceSelectModal } = storeToRefs(chatStore);
 const userStore = useUserStore();
 const localVersion = __APP_INFO__.version;
 const lastVersion = ref('加载中...');
-const { historyEnable, themeMode, uiVersion, langRegion, autoReopenMic, fullCookiesEnable, cookiesStr, enterpriseEnable, customChatNum, gpt4tEnable, sydneyEnable, sydneyPrompt, passServer } = storeToRefs(userStore);
+const { historyEnable, themeMode, uiVersion, langRegion, autoReopenMic, fullCookiesEnable, cookiesStr, enterpriseEnable, copilotProEnable, customChatNum, gpt4tEnable, sydneyEnable, sydneyPrompt, passServer } = storeToRefs(userStore);
 
 let cookiesEnable = ref(false);
 let cookies = ref('');
@@ -49,6 +49,7 @@ let settingIconStyle = ref({
 })
 let passingCFChallenge = ref(false);
 const enterpriseSetting = ref(false);
+const copilotProSetting = ref(false);
 const customChatNumSetting = ref(0);
 const gpt4tSetting = ref(true);
 const sydneySetting = ref(false);
@@ -339,6 +340,7 @@ const settingMenu = (key: string) => {
         themeModeSetting.value = themeMode.value;
         uiVersionSetting.value = uiVersion.value;
         langRegionSetting.value = langRegion.value;
+        copilotProSetting.value = copilotProEnable.value;
         enterpriseSetting.value = enterpriseEnable.value;
         customChatNumSetting.value = customChatNum.value;
         gpt4tSetting.value = gpt4tEnable.value;
@@ -396,7 +398,8 @@ const saveAdvancedSetting = () => {
   const tmpEnterpris = enterpriseEnable.value;
   enterpriseEnable.value = enterpriseSetting.value;
   customChatNum.value = customChatNumSetting.value;
-  const tmpGpt4t = gpt4tEnable.value, tmpSydney = sydneyEnable.value, tmpuiVersion = uiVersion.value;
+  const tmpGpt4t = gpt4tEnable.value, tmpSydney = sydneyEnable.value, tmpuiVersion = uiVersion.value, tmpCopilotPro = copilotProEnable.value;
+  copilotProEnable.value = copilotProSetting.value;
   gpt4tEnable.value = gpt4tSetting.value;
   autoReopenMic.value = autoReopenMicSetting.value;
   sydneyEnable.value = sydneySetting.value;
@@ -459,7 +462,7 @@ const saveAdvancedSetting = () => {
     }
   }
   isShowAdvancedSettingModal.value = false;
-  if (tmpEnterpris != enterpriseSetting.value || tmpSydney != sydneySetting.value || tmpGpt4t != gpt4tSetting.value || tmpuiVersion != uiVersionSetting.value) {
+  if (tmpEnterpris != enterpriseSetting.value || tmpSydney != sydneySetting.value || tmpGpt4t != gpt4tSetting.value || tmpuiVersion != uiVersionSetting.value || tmpCopilotPro != copilotProSetting.value) {
     window.location.href = '/';
   }
 }
@@ -877,13 +880,40 @@ const autoPassCFChallenge = async () => {
           </NFormItem>
         </NGridItem>
         <NGridItem>
-          <NFormItem path="gpt4tEnable" label="GPT4 Turbo">
-            <NSwitch v-model:value="gpt4tSetting" />
+          <NFormItem path="copilotProEnable">
+            <template #label>
+              Copilot Pro
+              <NTooltip trigger="hover">
+                <template #trigger>
+                  <NIcon size="14" style="top: 2px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M256 56C145.72 56 56 145.72 56 256s89.72 200 200 200s200-89.72 200-200S366.28 56 256 56zm0 82a26 26 0 1 1-26 26a26 26 0 0 1 26-26zm64 226H200v-32h44v-88h-32v-32h64v120h44z" fill="currentColor"></path></svg>
+                  </NIcon>
+                </template>
+                如果有 Copilot Pro 的账号, 可开启此选项
+              </NTooltip>
+            </template>
+            <NSwitch v-model:value="copilotProSetting" />
           </NFormItem>
         </NGridItem>
         <NGridItem>
           <NFormItem path="sydneyEnable" label="连续语音对话">
             <NSwitch v-model:value="autoReopenMicSetting" />
+          </NFormItem>
+        </NGridItem>
+        <NGridItem>
+          <NFormItem path="gpt4tEnable">
+            <template #label>
+              Copilot 增强
+              <NTooltip trigger="hover" :style="{ maxWidth: '240px' }">
+                <template #trigger>
+                  <NIcon size="14" style="top: 2px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"><path d="M256 56C145.72 56 56 145.72 56 256s89.72 200 200 200s200-89.72 200-200S366.28 56 256 56zm0 82a26 26 0 1 1-26 26a26 26 0 0 1 26-26zm64 226H200v-32h44v-88h-32v-32h64v120h44z" fill="currentColor"></path></svg>
+                  </NIcon>
+                </template>
+                增强 Microsoft Copilot 的能力, 有可能会导致一些问题
+              </NTooltip>
+            </template>
+            <NSwitch v-model:value="gpt4tSetting" />
           </NFormItem>
         </NGridItem>
         <NGridItem>

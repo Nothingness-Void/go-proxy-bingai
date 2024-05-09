@@ -206,22 +206,22 @@ try {
   console.error(error);
 }
 _G = {
-  Region: 'CN',
+  Region: 'US',
   Lang: 'zh-CN',
   ST: typeof si_ST !== 'undefined' ? si_ST : new Date(),
-  Mkt: 'en-US',
-  RevIpCC: 'us',
+  Mkt: 'zh-CN',
+  RevIpCC: 'sg',
   RTL: false,
-  Ver: '34',
+  Ver: '19',
   IG: randomCapitalString(32),
   EventID: randomLowercaseString(32),
   V: 'web',
   P: 'SERP',
   DA: 'PUSE01',
-  SUIH: randomString(22),
+  SUIH: randomString(14) + '-SppuprA',
   adc: 'b_ad',
   // logsb 启用 sendBeacon 推送日志，并在 sendBeacon 阻止
-  EF: { cookss: 1, bmcov: 1, crossdomainfix: 1, bmasynctrigger: 1, bmasynctrigger3: 1, getslctspt: 1, newtabsloppyclick: 1, chevroncheckmousemove: 1, sharepreview: 1, sharenewlayout: 1, cdxsugchip2: 1 },
+  EF: { cookss: 1, bmcov: 1, crossdomainfix: 1, bmasynctrigger: 1, bmasynctrigger3: 1, getslctspt: 1, newtabsloppyclick: 1, chevroncheckmousemove: 1, sharepreview: 1, shareoutimage: 1, sharefixreadnum: 1, chatskip2content: 1 },
   gpUrl: '/fd/ls/GLinkPing.aspx?',
   SB: false,
   TIP: 'L2yDt6NHpVg74zXbiBVawp2LXBqjJe69YXaqikLo6FSPRXTBSUtR6ThZ41EAwzei6dMFnTLBw6ngU32nwwgiSsRc1yemqufobYSrv96ii7qArPE9nssRwizpWUHDtJr8vSzmbjS',
@@ -232,7 +232,7 @@ _G = {
   AT: 'Harry-zklcdc/go-proxy-bingai'
 };
 _G.lsUrl = '/fd/ls/l?IG=' + _G.IG;
-curUrl = '/search';
+curUrl = '/chat';
 _G.XLS = '/web/xls.aspx';
 _G.XLS = '/web/xls.aspx';
 _G.XLSM = '/threshold/xls_master.aspx';
@@ -246,5 +246,9 @@ function si_T (a) {
   // }
   return true;
 }
+_G.NTT = "600000";
+_G.RTO = "86400000";
 _G.CTT = '3000';
-_G.BNFN = 'Default';;
+_G.BNFN = 'Default';
+_G.LG = "160";
+_G.FilterFlareInterval = 5;;

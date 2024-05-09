@@ -50,6 +50,10 @@
 >
 > [![Vercel 部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHarry-zklcdc%2Fgo-proxy-bingai&env=BYPASS_SERVER&project-name=go-proxy-bingai&repository-name=go-proxy-bingai)
 
+> #### Zeabur 部署
+>
+> [![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBA4SF)
+
 > #### Glitch 部署
 >
 > [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/Harry-zklcdc/go-proxy-bingai-glitch)

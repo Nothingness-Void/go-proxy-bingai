@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { NModal, NList, NListItem, NButton, useMessage, NSpace, NInput, NUpload, type UploadFileInfo, NEmpty } from 'naive-ui';
+import { NModal, NList, NListItem, NButton, useMessage, NSpace, NInput, NUpload, NVirtualList, type UploadFileInfo, NEmpty } from 'naive-ui';
 import { usePromptStore, type IPrompt, type IPromptDownloadConfig } from '@/stores/modules/prompt';
 import { storeToRefs } from 'pinia';
-import VirtualList from 'vue3-virtual-scroll-list';
 import ChatPromptItem from './ChatPromptItem.vue';
 
 const messgae = useMessage();
@@ -155,14 +154,17 @@ const downloadPrompt = async (config: IPromptDownloadConfig) => {
       <NButton secondary type="success" @click="exportPrompt" :loading="isExporting">导出</NButton>
       <NButton secondary type="error" @click="clearPrompt">清空</NButton>
     </div>
-    <VirtualList
+    <NVirtualList
       v-if="searchPromptList.length > 0"
       class="h-[40vh] xl:h-[60vh] overflow-y-auto"
-      :data-key="'prompt'"
-      :data-sources="searchPromptList"
-      :data-component="ChatPromptItem"
-      :keeps="10"
-    />
+      :item-size="131"
+      item-resizable
+      :items="searchPromptList"
+    >
+      <template #default="{ item, index }">
+        <ChatPromptItem :index="index" :source="item" />
+      </template>
+    </NVirtualList>
     <NEmpty v-else class="h-[40vh] xl:h-[60vh] flex justify-center items-center" description="暂无数据">
       <template #extra>
         <NButton secondary type="info" @click="isShowDownloadPop = true">下载提示词</NButton>

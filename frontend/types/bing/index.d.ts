@@ -280,9 +280,10 @@ declare const CIB: {
       hostnamesToBypassSecureConnection: string[];
       expiryInMinutes: number;
       request: {
+        source: string;
         sliceIds: string[];
         optionsSets: string[];
-      }
+      };
     };
     messaging: {
       /**
