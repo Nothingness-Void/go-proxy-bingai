@@ -6,6 +6,7 @@ import { usePromptStore, type IPrompt } from '@/stores/modules/prompt';
 import { storeToRefs } from 'pinia';
 import ChatPromptItem from './ChatPromptItem.vue';
 import { isMobile } from '@/utils/utils';
+import cookies from '@/utils/cookies';
 import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner.vue';
 import { ApiResultCode } from '@/api/model/ApiResult';
 import type { SysConfig } from '@/api/model/sysconf/SysConfig';
@@ -137,6 +138,11 @@ const initSysConfig = async () => {
           return;
         }
         await afterAuth(res.data);
+        let MATD_Cookie = cookies.get('MicrosoftApplicationsTelemetryDeviceId');
+        if (MATD_Cookie == '' || MATD_Cookie == null) {
+          MATD_Cookie = crypto.randomUUID();
+          cookies.set('MicrosoftApplicationsTelemetryDeviceId', MATD_Cookie, 60, '/');
+        }
         if (res.data.info != '') {
           const info = JSON.parse(res.data.info);
           message.create(info['content'], {

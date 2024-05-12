@@ -82,6 +82,8 @@
 
 ✅ 登录账号支持画图
 
+✅ 支持侧边栏聊天和撰写 - [Chrome插件](https://github.com/Harry-zklcdc/bingai-sidebar-chrome)
+
 ✅ 支持 OpenAI 格式 API 调用 - [📝 Wiki文档](https://github.com/Harry-zklcdc/go-proxy-bingai/wiki/BingAPI)
 
 ## 📌 效果展示

@@ -12,6 +12,6 @@ func Th(w http.ResponseWriter, r *http.Request) {
 		helper.UnauthorizedResult(w)
 		return
 	}
-	r.URL.Path = strings.ReplaceAll(r.URL.Path, "/th/", "/")
+	r.URL.Path = strings.ReplaceAll(r.URL.Path, "/th/th", "/th")
 	common.NewSingleHostReverseProxy(common.BING_SOURCE_URL).ServeHTTP(w, r)
 }

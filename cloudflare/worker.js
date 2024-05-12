@@ -459,7 +459,7 @@ export default {
     if (currentUrl.pathname.startsWith('/sydney')) {
       targetUrl = new URL(SYDNEY_ORIGIN + currentUrl.pathname + currentUrl.search);
     } else if (currentUrl.pathname.startsWith('/th')) {
-      targetUrl = new URL(BING_SOURCE_ORIGIN + currentUrl.pathname.replaceAll('/th/', '/') + currentUrl.search);
+      targetUrl = new URL(BING_SOURCE_ORIGIN + currentUrl.pathname.replaceAll('/th/th', '/th') + currentUrl.search);
     } else if (currentUrl.pathname.startsWith('/edgesvc')) {
       targetUrl = new URL(EDGE_ORIGIN + currentUrl.pathname + currentUrl.search);
     } else if (currentUrl.pathname.startsWith('/opaluqu')) {

@@ -1661,7 +1661,7 @@ if (UserStoreGet('copilotProEnable')) {
   _w['_sydConvConfig']['enableGPT4TurboSwitch'] = true
 }
 
-// _G.Region = UserStoreGet('langRegion') || 'CN'
+_G.Region = UserStoreGet('langRegion') || 'CN'
 
 _w['_sydConvConfig']['enableAutoReopenMic'] = UserStoreGet('autoReopenMic') || true
 _w['_sydConvConfig']['enableAutoReopenMicTTSStopped'] = UserStoreGet('autoReopenMic') || true
