@@ -143,6 +143,17 @@ const initSysConfig = async () => {
           MATD_Cookie = crypto.randomUUID();
           cookies.set('MicrosoftApplicationsTelemetryDeviceId', MATD_Cookie, 60, '/');
         }
+        let RWBF_Cookie = userStore.getUserRwBf();
+        if (RWBF_Cookie != '') {
+          let RWBFs = RWBF_Cookie.split('&');
+          for (let i = 0; i < RWBFs.length; i++) {
+            if (RWBFs[i].startsWith('wls=')) {
+              RWBFs[i] = 'wls=2';
+            }
+          }
+          RWBF_Cookie = RWBFs.join('&');
+          userStore.saveUserRwBf(RWBF_Cookie);
+        }
         if (res.data.info != '') {
           const info = JSON.parse(res.data.info);
           message.create(info['content'], {
