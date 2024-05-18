@@ -7,7 +7,7 @@ WORKDIR /app
 
 USER root
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl supervisor
 
 RUN curl -L https://github.com/Harry-zklcdc/go-proxy-bingai/releases/latest/download/go-proxy-bingai-linux-amd64.tar.gz -o go-proxy-bingai-linux-amd64.tar.gz && \
     tar -zxvf go-proxy-bingai-linux-amd64.tar.gz && \
@@ -22,6 +22,9 @@ RUN apt-get remove -y curl && \
     rm go-proxy-bingai-linux-amd64.tar.gz
 
 COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+RUN mkdir -p /tmp/edge /var/run/supervisor /var/log/supervisor
+RUN chown "${GBP_USER_ID}:${GBP_USER_ID}" /var/run/supervisor /var/log/supervisor
+RUN chmod 777 /tmp
 
 USER $GBP_USER
 

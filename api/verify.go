@@ -63,7 +63,7 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 	iframeid, _ := url.QueryUnescape(queryRaw.Get("iframeid"))
 	convId, _ := url.QueryUnescape(queryRaw.Get("convId"))
 	rid, _ := url.QueryUnescape(queryRaw.Get("rid"))
-	resp, status, err := binglib.Bypass(bypassServer, strings.Join(reqCookies, "; "), iframeid, IG, convId, rid, T)
+	resp, status, err := binglib.Bypass(bypassServer, strings.Join(reqCookies, "; "), iframeid, IG, convId, rid, T, r.Host)
 	if err != nil {
 		helper.ErrorResult(w, http.StatusInternalServerError, err.Error())
 		common.Logger.Error("VerifyHandler Bypass Error: %v", err)

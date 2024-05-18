@@ -282,6 +282,7 @@ const verify = async (request, cookie) => {
     'convId': currentUrl.searchParams.get('convId'),
     'rid': currentUrl.searchParams.get('rid'),
     'T': currentUrl.searchParams.get('T'),
+    'host': WEB_CONFIG.WORKER_URL.replace("http://", "").replace("https://", ""),
   }
   const newReq = new Request(bypassServer, {
     method: 'POST',
@@ -531,7 +532,13 @@ export default {
     }
 
     if (currentUrl.pathname === '/turing/captcha/challenge') {
-      return challenge(request);
+      if (currentUrl.searchParams.get('h') != '' && currentUrl.searchParams.get('h') != null && currentUrl.searchParams.get('h') != undefined) {
+        let params = currentUrl.searchParams;
+        params.delete('h');
+        targetUrl = new URL(BING_ORIGIN + '/turing/captcha/challenge' + (params.toString() == '' ? '' : '?' + params.toString()));
+      } else {
+        return challenge(request);
+      }
     }
     if (currentUrl.pathname === '/challenge/verify') {
       return verify(request, cookies);

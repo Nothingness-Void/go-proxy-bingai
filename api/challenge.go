@@ -1,6 +1,7 @@
 package api
 
 import (
+	"adams549659584/go-proxy-bingai/common"
 	"adams549659584/go-proxy-bingai/common/helper"
 	"fmt"
 	"net/http"
@@ -93,6 +94,15 @@ func ChallengeHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != "GET" {
 		helper.CommonResult(w, http.StatusMethodNotAllowed, "Method Not Allowed", nil)
+		return
+	}
+
+	if r.URL.Query().Get("h") != "" {
+		tmpReq := r.URL.Query()
+		tmpReq.Del("h")
+		r.URL.RawQuery = tmpReq.Encode()
+
+		common.NewSingleHostReverseProxy(common.BING_URL).ServeHTTP(w, r)
 		return
 	}
 

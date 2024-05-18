@@ -56,7 +56,7 @@ func getCookie(reqCookie, convId, rid string) (cookie string, err error) {
 	if err != nil {
 		return
 	}
-	resp, status, err := binglib.Bypass(common.BypassServer, reqCookie, "local-gen-"+hex.NewUUID(), IG, convId, rid, T)
+	resp, status, err := binglib.Bypass(common.BypassServer, reqCookie, "local-gen-"+hex.NewUUID(), IG, convId, rid, T, "")
 	if err != nil || status != http.StatusOK {
 		common.Logger.Error("Bypass Error: %v", err)
 		return
