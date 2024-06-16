@@ -21,7 +21,7 @@ var (
 	USER_RwBf           string
 	USER_MUID           string
 	// 访问权限密钥，可选
-	AUTH_KEY             string
+	AUTH_KEYS            []string
 	AUTH_KEY_COOKIE_NAME = "BingAI_Auth_Key"
 
 	BypassServer  string
@@ -56,7 +56,7 @@ func initEnv() {
 	// is debug
 	IS_DEBUG_MODE = os.Getenv("Go_Proxy_BingAI_Debug") != ""
 	// auth
-	AUTH_KEY = os.Getenv("Go_Proxy_BingAI_AUTH_KEY")
+	AUTH_KEYS = strings.Split(os.Getenv("Go_Proxy_BingAI_AUTH_KEY"), ",")
 	// KievRPSSecAuth Cookie
 	USER_KievRPSSecAuth = os.Getenv("USER_KievRPSSecAuth")
 	// MUID Cookie

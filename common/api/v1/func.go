@@ -35,8 +35,8 @@ func init() {
 
 func getCookie(reqCookie, convId, rid string) (cookie string, err error) {
 	cookie = reqCookie
-	if common.AUTH_KEY != "" {
-		cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEY
+	if len(common.AUTH_KEYS) > 0 {
+		cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEYS[0]
 	}
 	c := request.NewRequest()
 	res := c.SetUrl("http://localhost:"+common.PORT+"/chat?q=Bing+AI&showconv=1&FORM=hpcodx&ajaxhist=0&ajaxserp=0&cc=us").
@@ -65,8 +65,10 @@ func getCookie(reqCookie, convId, rid string) (cookie string, err error) {
 	if len(common.USER_TOKEN_LIST) == 0 {
 		cookie += "; _U=" + hex.NewHex(128)
 	}
-	if common.AUTH_KEY != "" {
-		cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEY
+	if len(common.AUTH_KEYS) > 0 {
+		if common.AUTH_KEYS[0] != "" {
+			cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEYS[0]
+		}
 	}
 	return cookie, nil
 }
