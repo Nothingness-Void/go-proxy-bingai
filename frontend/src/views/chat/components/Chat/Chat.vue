@@ -521,7 +521,7 @@ const auth = async () => {
     <!-- 服务器选择 -->
     <ChatServiceSelect />
     <!-- 授权 -->
-    <NModal v-model:show="isShowUnauthorizedModal" preset="dialog" :close-on-esc="false" :mask-closable="false" :show-icon="false">
+    <NModal v-model:show="isShowUnauthorizedModal" preset="dialog" :closable="false" :close-on-esc="false" :maskClosable="false" :show-icon="false">
       <NResult class="box-border w-11/12 lg:w-[400px] px-4 py-4 rounded-md" status="403" title="401 未授权">
         <template #footer>
           <NInput class="w-11/12" v-model:value="authKey" type="password" placeholder="请输入授权码" maxlength="60" clearable></NInput>
